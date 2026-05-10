@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>榕江恒鑫 - 固定资产管理 v12</title>
+    <style>
+        :root { --primary: #1677ff; --bg: #f5f7fa; --card-bg: #ffffff; }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; }
+        
+        /* 顶部导航与角色切换 */
+        .header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .role-switch { display: flex; gap: 5px; }
+        .role-btn { padding: 4px 8px; border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; font-size: 12px; cursor: pointer; background: transparent; color: white; }
+        .role-btn.active { background: white; color: var(--primary); font-weight: bold; }
+
+        /* 内容区域 */
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        
+        /* 卡片样式 */
+        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        /* L1 业务入口网格 */
+        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .menu-item { background: #f0f7ff; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.2s; }
+        .menu-item:active { transform: scale(0.98); }
+        .menu-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+        .menu-text { font-size: 14px; color: #333; }
+
+        /* 底部版本标识 */
+        .footer-version { position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; z-index: 999; }
+
+        /* 隐藏/显示控制 */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部角色切换 -->
+    <div class="header">
+        <div style="font-weight: bold;">恒鑫资产管家</div>
+        <div class="role-switch">
+            <button class="role-btn active" onclick="switchRole('L1')">L1 员工</button>
+            <button class="role-btn" onclick="switchRole('L2')">L2 管理</button>
+            <button class="role-btn" onclick="switchRole('L3')">L3 超管</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- L1 员工视角 -->
+        <div id="view-L1">
+            <div class="card">
+                <div class="card-title">我的业务</div>
+                <div class="grid-menu">
+                    <div class="menu-item"><span class="menu-icon">📥</span><span class="menu-text">领用申请</span></div>
+                    <div class="menu-item"><span class="menu-icon">📤</span><span class="menu-text">归还登记</span></div>
+                    <div class="menu-item"><span class="menu-icon">🔧</span><span class="menu-text">故障报修</span></div>
+                    <div class="menu-item"><span class="menu-icon">🗑️</span><span class="menu-text">报废申请</span></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">我的进度</div>
+                <div style="font-size: 13px; color: #666; padding: 10px 0;">暂无正在进行的申请...</div>
+            </div>
+        </div>
+
+        <!-- L2 管理员视角 -->
+        <div id="view-L2" class="hidden">
+            <div class="card">
+                <div class="card-title">数据概览</div>
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                    <div><div style="font-size: 20px; font-weight: bold; color: var(--primary);">128</div><div style="font-size: 12px; color: #999;">资产总数</div></div>
+                    <div><div style="font-size: 20px; font-weight: bold; color: #52c41a;">95</div><div style="font-size: 12px; color: #999;">在用中</div></div>
+                    <div><div style="font-size: 20px; font-weight: bold; color: #faad14;">3</div><div style="font-size: 12px; color: #999;">待审批</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">审批中心</div>
+                <div style="padding: 10px; border-bottom: 1px solid #eee;">艾培刚 - 领用笔记本电脑 (待审)</div>
+                <div style="padding: 10px;">程晨 - 归还打印机 (待审)</div>
+            </div>
+        </div>
+
+        <!-- L3 超管视角 -->
+        <div id="view-L3" class="hidden">
+            <div class="card">
+                <div class="card-title">系统配置</div>
+                <div style="padding: 10px; border-bottom: 1px solid #eee;">基础数据字典 (地点/分类)</div>
+                <div style="padding: 10px; border-bottom: 1px solid #eee;">审批流程自定义</div>
+                <div style="padding: 10px;">精臣打印机绑定设置</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-version">Current Version: v12</div>
+
+    <script>
+        function switchRole(role) {
+            // 隐藏所有视图
+            document.getElementById('view-L1').classList.add('hidden');
+            document.getElementById('view-L2').classList.add('hidden');
+            document.getElementById('view-L3').classList.add('hidden');
+            
+            // 显示目标视图
+            document.getElementById('view-' + role).classList.remove('hidden');
+
+            // 更新按钮状态
+            const buttons = document.querySelectorAll('.role-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
