@@ -3,50 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>固定资产管理系统 V13</title>
+<title>固定资产管理系统 V14</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{--primary:#1677ff;--success:#52c41a;--warning:#faad14;--danger:#ff4d4f;--bg:#f5f5f5;--card-bg:#fff;--text:#1a1a1a;--text2:#666;--text3:#999;--border:#f0f0f0;--shadow:0 2px 8px rgba(0,0,0,0.06);--radius:12px;--rs:8px}
+:root{--primary:#1677ff;--primary-light:#e6f4ff;--success:#52c41a;--warning:#faad14;--danger:#ff4d4f;--bg:#f0f2f5;--card-bg:#fff;--text:#1a1a1a;--text2:#666;--text3:#999;--border:#e8e8e8;--shadow:0 2px 8px rgba(0,0,0,0.06);--radius:12px;--rs:8px;--transition:all .25s ease}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
-.header{background:var(--primary);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.header-title{font-size:17px;font-weight:600}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
+.header{background:linear-gradient(135deg,#1677ff,#0958d9);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(22,119,255,0.15)}
+.header-title{font-size:17px;font-weight:600;letter-spacing:0.5px}
 .header-actions{display:flex;align-items:center;gap:12px}
-.header-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+.header-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:var(--transition)}
+.header-btn:active{transform:scale(0.9);background:rgba(255,255,255,0.35)}
 .role-bar{display:flex;background:#fff;padding:4px;margin:8px 12px;border-radius:var(--radius);box-shadow:var(--shadow)}
-.role-btn{flex:1;padding:8px 0;text-align:center;border:none;background:transparent;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .2s}
+.role-btn{flex:1;padding:8px 0;text-align:center;border:none;background:transparent;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:var(--transition)}
 .role-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(22,119,255,0.3)}
-.page{display:none;padding:0 12px 80px}.page.active{display:block}
-.card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.page{display:none;padding:0 12px 80px;animation:fadePage .3s ease}.page.active{display:block}
+@keyframes fadePage{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;transition:var(--transition)}
 .card-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
 .grid-menu{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.menu-item{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 12px;text-align:center;cursor:pointer;transition:transform .15s;border:none;width:100%}
-.menu-item:active{transform:scale(0.96)}.menu-item .icon{font-size:28px;margin-bottom:8px;display:block}.menu-item .label{font-size:14px;font-weight:500;color:var(--text)}
+.menu-item{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 12px;text-align:center;cursor:pointer;transition:var(--transition);border:none;width:100%}
+.menu-item:active{transform:scale(0.96)}.menu-item:hover{box-shadow:0 4px 16px rgba(0,0,0,0.1)}.menu-item .icon{font-size:28px;margin-bottom:8px;display:block}.menu-item .label{font-size:14px;font-weight:500;color:var(--text)}
 .form-group{margin-bottom:14px}.form-label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500}
 .form-input,.form-select,.form-textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;outline:none;transition:border .2s;background:#fff}
-.form-input:focus,.form-select:focus{border-color:var(--primary)}.form-textarea{min-height:80px;resize:vertical}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:none;border-radius:var(--rs);font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+.form-input:focus,.form-select:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}.form-textarea{min-height:80px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:none;border-radius:var(--rs);font-size:14px;font-weight:500;cursor:pointer;transition:var(--transition)}
 .btn:active{transform:scale(0.97)}.btn-primary{background:var(--primary);color:#fff}.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}.btn-warning{background:var(--warning);color:#fff}.btn-block{width:100%}.btn-sm{padding:6px 12px;font-size:12px}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}th{font-weight:600;color:var(--text2);background:#fafafa}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}th{font-weight:600;color:var(--text2);background:#fafafa;white-space:nowrap}td{white-space:nowrap}
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500}
 .badge-pending{background:#fff7e6;color:#d46b08}.badge-approved{background:#f6ffed;color:#389e0d}.badge-rejected{background:#fff1f0;color:#cf1322}
 .badge-inuse{background:#e6f7ff;color:#096dd9}.badge-idle{background:#f0f5ff;color:#1d39c4}.badge-repair{background:#fff7e6;color:#d46b08}.badge-scrap{background:#f5f5f5;color:#8c8c8c}
+.badge-inspect{background:#fff0f6;color:#c41d7f}.badge-due{background:#fffbe6;color:#ad8b00}
+.warning-card{background:linear-gradient(135deg,#fff2f0,#fff);border-left:4px solid var(--danger);border-radius:var(--rs);padding:12px;margin-bottom:8px}
+.warning-card.warn{background:linear-gradient(135deg,#fffbe6,#fff);border-left-color:var(--warning)}
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center}
 .modal-overlay.active{display:flex}.modal-content{background:#fff;border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:20px;animation:slideUp .25s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .modal-title{font-size:17px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}.modal-close{background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.stat-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;text-align:center;cursor:pointer;transition:all .15s}
-.stat-card:active{transform:scale(0.96)}.stat-num{font-size:24px;font-weight:700;color:var(--primary)}.stat-label{font-size:12px;color:var(--text2);margin-top:2px}
-.chart-box{width:100%;height:250px}
+.stat-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;text-align:center;cursor:pointer;transition:var(--transition)}
+.stat-card:active{transform:scale(0.96)}.stat-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1)}.stat-num{font-size:24px;font-weight:700;color:var(--primary)}.stat-label{font-size:12px;color:var(--text2);margin-top:2px}
+.chart-box{width:100%;height:220px}
 .tabs{display:flex;background:#fff;border-radius:var(--rs);overflow:hidden;margin-bottom:12px;border:1px solid var(--border)}
-.tab-item{flex:1;padding:10px 0;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:all .2s}
+.tab-item{flex:1;padding:10px 0;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:var(--transition)}
 .tab-item.active{background:var(--primary);color:#fff}
 .approval-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}.approval-item:last-child{border-bottom:none}
-.approval-info{flex:1}.approval-title{font-weight:500;font-size:14px}.approval-meta{font-size:12px;color:var(--text3);margin-top:2px}.approval-actions{display:flex;gap:8px}
+.approval-info{flex:1;min-width:0}.approval-title{font-weight:500;font-size:14px}.approval-meta{font-size:12px;color:var(--text3);margin-top:2px}.approval-actions{display:flex;gap:8px}
 .search-bar{display:flex;gap:8px;margin-bottom:12px}.search-bar input{flex:1}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:var(--rs);font-size:14px;z-index:300;display:none;max-width:80%;text-align:center}
 .toast.show{display:block;animation:fadeInOut 2s ease}
@@ -59,11 +64,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .tree-l1{padding:10px 12px;background:#e6f7ff;border-radius:6px;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
 .tree-l2{padding:8px 12px 8px 32px;background:#fafafa;border-radius:4px;margin:2px 0;display:flex;align-items:center;justify-content:space-between}
 .tree-l3{padding:6px 12px 6px 56px;color:var(--text2);display:flex;align-items:center;justify-content:space-between}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}.empty-state .icon{font-size:40px;margin-bottom:12px}
+.section-title{font-size:14px;font-weight:600;color:var(--text2);margin:16px 0 10px;padding-left:8px;border-left:3px solid var(--primary)}
 @media(min-width:768px){body{max-width:500px;margin:0 auto}}
 </style>
 </head>
 <body>
-
 <div class="header">
 <div class="header-title">固定资产管理</div>
 <div class="header-actions">
@@ -71,14 +77,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 <button class="header-btn" onclick="showPage('profile')"><i class="fas fa-user"></i></button>
 </div>
 </div>
-
 <div class="role-bar">
 <button class="role-btn active" data-role="L1" onclick="switchRole('L1')">👤 员工</button>
 <button class="role-btn" data-role="L2" onclick="switchRole('L2')">🔧 管理员</button>
 <button class="role-btn" data-role="L3" onclick="switchRole('L3')">⚙️ 超管</button>
-</div>
-
-<!-- L1 HOME -->
+</div><!-- ===== L1 HOME ===== -->
 <div class="page active" id="page-l1-home">
 <div class="grid-menu">
 <div class="menu-item" onclick="showPage('l1-apply')" style="border-top:3px solid #1677ff"><span class="icon">📋</span><span class="label">领用</span></div>
@@ -96,7 +99,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 </div>
 </div>
 
-<!-- L1 APPLY (三级分类+搜索) -->
+<!-- ===== L1 APPLY (库存为0提示) ===== -->
 <div class="page" id="page-l1-apply">
 <div class="card">
 <div class="card-title">📋 领用申请</div>
@@ -106,65 +109,59 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 <select class="form-select" id="applyCatL2" onchange="onApplyCatL2Change()"><option value="">请选择二级分类</option></select></div>
 <div class="form-group" id="applyCatL3Group" style="display:none"><label class="form-label">资产名称</label>
 <input class="form-input" id="applyAssetSearch" placeholder="输入关键字搜索..." oninput="onApplyAssetSearch()" style="margin-bottom:4px">
-<select class="form-select" id="applyCatL3" size="4"></select></div>
-<div class="form-group"><label class="form-label">领用数量</label><input class="form-input" type="number" id="applyQty" value="1" min="1"></div>
+<select class="form-select" id="applyCatL3" size="4" onchange="onApplyL3Select()"></select></div>
+<div id="applyStockInfo" style="display:none;padding:8px 12px;border-radius:6px;margin-bottom:12px;font-size:13px"></div>
+<div class="form-group"><label class="form-label">领用数量</label><input class="form-input" type="number" id="applyQty" value="1" min="1" oninput="onApplyQtyChange()"></div>
 <div class="form-group"><label class="form-label">用途</label><select class="form-select" id="applyPurpose"><option>日常办公</option><option>维修更换</option><option>项目使用</option><option>临时借用</option></select></div>
 <div class="form-group"><label class="form-label">备注</label><textarea class="form-textarea" id="applyNote" placeholder="可选填写备注..."></textarea></div>
-<button class="btn btn-primary btn-block" onclick="submitApply()">提交申请</button>
+<button class="btn btn-primary btn-block" id="applySubmitBtn" onclick="submitApply()">提交申请</button>
 </div>
 </div>
 
-<!-- L1 RETURN (图片上传) -->
+<!-- ===== L1 RETURN ===== -->
 <div class="page" id="page-l1-return">
 <div class="card">
 <div class="card-title">🔄 归还资产</div>
 <div class="form-group"><label class="form-label">资产编号</label><select class="form-select" id="returnAsset"><option value="">请选择已领用的资产</option></select></div>
 <div class="form-group"><label class="form-label">资产状况</label><select class="form-select" id="returnCondition"><option>完好</option><option>损坏</option><option>有磨损</option></select></div>
-<div class="form-group"><label class="form-label">📷 上传图片（最多9张，自动压缩）</label>
-<div class="image-preview" id="returnImages"></div>
-<button class="btn btn-sm btn-outline" onclick="document.getElementById('returnFileInput').click()">+ 添加图片</button>
-<input type="file" id="returnFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event,'return')"></div>
+<div class="form-group"><label class="form-label">📷 上传图片（最多9张，自动压缩）</label><div class="image-preview" id="returnImages"></div><button class="btn btn-sm btn-outline" onclick="document.getElementById('returnFileInput').click()">+ 添加图片</button><input type="file" id="returnFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event,'return')"></div>
 <div class="form-group"><label class="form-label">备注</label><textarea class="form-textarea" id="returnNote" placeholder="可选填写备注..."></textarea></div>
 <button class="btn btn-primary btn-block" onclick="submitReturn()">提交归还</button>
 </div>
 </div>
 
-<!-- L1 REPAIR (图片上传) -->
+<!-- ===== L1 REPAIR ===== -->
 <div class="page" id="page-l1-repair">
 <div class="card">
 <div class="card-title">🔧 报修申请</div>
 <div class="form-group"><label class="form-label">资产编号</label><select class="form-select" id="repairAsset"><option value="">请选择资产</option></select></div>
-<div class="form-group"><label class="form-label">📷 上传图片（最多9张，自动压缩）</label>
-<div class="image-preview" id="repairImages"></div>
-<button class="btn btn-sm btn-outline" onclick="document.getElementById('repairFileInput').click()">+ 添加图片</button>
-<input type="file" id="repairFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event,'repair')"></div>
+<div class="form-group"><label class="form-label">📷 上传图片（最多9张，自动压缩）</label><div class="image-preview" id="repairImages"></div><button class="btn btn-sm btn-outline" onclick="document.getElementById('repairFileInput').click()">+ 添加图片</button><input type="file" id="repairFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event,'repair')"></div>
 <div class="form-group"><label class="form-label">故障描述</label><textarea class="form-textarea" id="repairDesc" placeholder="请描述故障情况..."></textarea></div>
 <div class="form-group"><label class="form-label">紧急程度</label><select class="form-select" id="repairUrgency"><option>普通</option><option>紧急</option><option>特急</option></select></div>
 <button class="btn btn-primary btn-block" onclick="submitRepair()">提交报修</button>
 </div>
 </div>
 
-<!-- L1 SCRAP (图片上传) -->
+<!-- ===== L1 SCRAP ===== -->
 <div class="page" id="page-l1-scrap">
 <div class="card">
 <div class="card-title">🗑️ 报废申请</div>
 <div class="form-group"><label class="form-label">资产编号</label><select class="form-select" id="scrapAsset"><option value="">请选择资产</option></select></div>
-<div class="form-group"><label class="form-label">📷 上传图片（最多9张，自动压缩）</label>
-<div class="image-preview" id="scrapImages"></div>
-<button class="btn btn-sm btn-outline" onclick="document.getElementById('scrapFileInput').click()">+ 添加图片</button>
-<input type="file" id="scrapFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event,'scrap')"></div>
+<div class="form-group"><label class="form-label">📷 上传图片（最多9张，自动压缩）</label><div class="image-preview" id="scrapImages"></div><button class="btn btn-sm btn-outline" onclick="document.getElementById('scrapFileInput').click()">+ 添加图片</button><input type="file" id="scrapFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event,'scrap')"></div>
 <div class="form-group"><label class="form-label">报废原因</label><textarea class="form-textarea" id="scrapReason" placeholder="请说明报废原因..."></textarea></div>
 <button class="btn btn-danger btn-block" onclick="submitScrap()">提交报废申请</button>
 </div>
 </div>
 
-<!-- L2 HOME (可点击卡片) -->
+<!-- ===== L2 HOME (6卡片+预警+到期+盘点+图表) ===== -->
 <div class="page" id="page-l2-home">
 <div class="stats-grid">
 <div class="stat-card" onclick="jumpToAssetList('all')"><div class="stat-num" id="statTotal">0</div><div class="stat-label">资产总数</div></div>
 <div class="stat-card" onclick="jumpToAssetList('在用')"><div class="stat-num" id="statInUse">0</div><div class="stat-label">在用</div></div>
 <div class="stat-card" onclick="jumpToAssetList('闲置')"><div class="stat-num" id="statIdle">0</div><div class="stat-label">闲置</div></div>
 <div class="stat-card" onclick="jumpToAssetList('维修中')"><div class="stat-num" id="statRepair" style="color:var(--warning)">0</div><div class="stat-label">维修中</div></div>
+<div class="stat-card" onclick="jumpToAssetList('送检')"><div class="stat-num" id="statInspect" style="color:#c41d7f">0</div><div class="stat-label">送检</div></div>
+<div class="stat-card" onclick="jumpToAssetList('需检定')"><div class="stat-num" id="statDue" style="color:#ad8b00">0</div><div class="stat-label">需检定</div></div>
 </div>
 <div class="tabs">
 <button class="tab-item active" onclick="switchL2Tab('dashboard',this)">📊 看板</button>
@@ -173,15 +170,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 <button class="tab-item" onclick="switchL2Tab('records',this)">📋 领用记录</button>
 </div>
 <div id="l2-dashboard">
+<div class="card" id="warningPanel" style="display:none"><div class="card-title">⚠️ 库存预警 <span class="badge badge-pending" id="warningCount">0</span></div><div id="warningList"></div></div>
+<div class="card" id="duePanel" style="display:none"><div class="card-title">⏰ 检测设备到检提醒 <span class="badge badge-pending" id="dueCount">0</span></div><div id="dueList"></div></div>
+<div class="card" id="checkPanel" style="display:none"><div class="card-title">📋 待盘点资产 <span class="badge badge-pending" id="checkCount">0</span></div><div id="checkList"></div></div>
 <div class="card"><div class="card-title">📊 资产分类占比</div><div class="chart-box" id="chartCategory"></div></div>
 <div class="card"><div class="card-title">📈 领用趋势</div><div class="chart-box" id="chartTrend"></div></div>
+<div class="card"><div class="card-title">📊 资产状态分布</div><div class="chart-box" id="chartStatus"></div></div>
+<div class="card"><div class="card-title">📊 分类资产排行</div><div class="chart-box" id="chartRanking"></div></div>
 </div>
 <div id="l2-approvals" style="display:none"><div class="card"><div class="card-title">📝 待审批 <span id="pendingCount" class="badge badge-pending">0</span></div><div id="approvalList"></div></div></div>
 <div id="l2-assets" style="display:none">
 <div class="card">
 <div class="card-title">📦 资产台账</div>
-<div class="search-bar"><input class="form-input" id="assetSearch" placeholder="搜索资产名称/编号/状态..." oninput="renderAssetTable()"><button class="btn btn-primary btn-sm" onclick="showAddAssetV13()">+ 新增</button></div>
-<div class="table-wrap"><table><thead><tr><th>编号</th><th>名称</th><th>状态</th><th>操作</th></tr></thead><tbody id="assetTableBody"></tbody></table></div>
+<div class="search-bar"><input class="form-input" id="assetSearch" placeholder="搜索资产名称/编号/状态..." oninput="renderAssetTable()"><button class="btn btn-primary btn-sm" onclick="showAddAssetV14()">+ 新增</button></div>
+<div class="table-wrap"><table><thead><tr><th>编号</th><th>资产名称</th><th>种类</th><th>状态</th><th>型号</th><th>规格</th><th>数量</th><th>价格</th><th>备注</th><th>操作</th></tr></thead><tbody id="assetTableBody"></tbody></table></div>
 </div>
 </div>
 <div id="l2-records" style="display:none">
@@ -189,7 +191,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 </div>
 </div>
 
-<!-- L3 HOME -->
+<!-- ===== L3 HOME ===== -->
 <div class="page" id="page-l3-home">
 <div class="grid-menu" style="grid-template-columns:1fr 1fr">
 <div class="menu-item" onclick="showPage('l3-locations')"><span class="icon">📍</span><span class="label">存放地点</span></div>
@@ -200,69 +202,73 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 </div>
 </div>
 
-<!-- L3 LOCATIONS -->
+<!-- ===== L3 LOCATIONS ===== -->
 <div class="page" id="page-l3-locations">
 <div class="card"><div class="card-title">📍 存放地点管理 <button class="btn btn-primary btn-sm" onclick="showAddLocation()">+ 新增</button></div><div id="locationList"></div></div>
 </div>
 
-<!-- L3 CATEGORIES (三级树形) -->
+<!-- ===== L3 CATEGORIES ===== -->
 <div class="page" id="page-l3-categories">
 <div class="card"><div class="card-title">📂 资产分类管理（三级） <button class="btn btn-primary btn-sm" onclick="showAddCategoryV13()">+ 新增</button></div><div id="categoryTreeList"></div></div>
 </div>
 
-<!-- L3 APPROVAL FLOW -->
+<!-- ===== L3 APPROVAL FLOW (二级联动+自选人员) ===== -->
 <div class="page" id="page-l3-approval-flow">
 <div class="card">
 <div class="card-title">🔀 审批流配置</div>
-<div class="form-group"><label class="form-label">资产分类</label><select class="form-select" id="flowCategory" onchange="onFlowCategoryChange()"></select></div>
+<div class="form-group"><label class="form-label">资产一级分类</label><select class="form-select" id="flowCategory" onchange="onFlowCategoryChange()"></select></div>
+<div class="form-group" id="flowCatL2Group" style="display:none"><label class="form-label">资产二级分类（可选，为空则按一级配置）</label><select class="form-select" id="flowCatL2" onchange="onFlowCatL2Change()"></select></div>
 <div id="flowConfigArea"></div>
 <button class="btn btn-primary btn-block" onclick="saveFlowConfig()" style="margin-top:12px">保存配置</button>
 </div>
 </div>
 
-<!-- L3 AUDIT -->
+<!-- ===== L3 AUDIT ===== -->
 <div class="page" id="page-l3-audit">
 <div class="card"><div class="card-title">📜 审计日志</div><div id="auditLogList"></div></div>
 </div>
 
-<!-- L3 ADMIN MANAGEMENT -->
+<!-- ===== L3 ADMIN MANAGEMENT (组织架构人员选择) ===== -->
 <div class="page" id="page-l3-admin-mgmt">
 <div class="card">
 <div class="card-title">👥 管理员设置</div>
 <div style="margin-bottom:16px">
 <label class="form-label">👑 超管列表（拥有L3全部权限）</label><div id="superAdminList"></div>
-<button class="btn btn-sm btn-primary" onclick="addSuperAdmin()" style="margin-top:8px">+ 添加超管</button>
+<button class="btn btn-sm btn-primary" onclick="addSuperAdminV14()" style="margin-top:8px">+ 添加超管</button>
 </div>
 <div>
 <label class="form-label">🔧 管理员列表（拥有L2审批与台账权限）</label><div id="adminList"></div>
-<button class="btn btn-sm btn-primary" onclick="addAdmin()" style="margin-top:8px">+ 添加管理员</button>
+<button class="btn btn-sm btn-primary" onclick="addAdminV14()" style="margin-top:8px">+ 添加管理员</button>
 </div>
 </div>
 </div>
 
-<!-- PROFILE -->
+<!-- ===== PROFILE ===== -->
 <div class="page" id="page-profile">
 <div class="card">
 <div class="card-title">👤 个人中心</div>
 <div style="text-align:center;padding:20px 0">
-<div style="width:60px;height:60px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px">艾</div>
+<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1677ff,#0958d9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px">艾</div>
 <div style="font-size:16px;font-weight:600">艾培刚</div>
 <div style="font-size:12px;color:var(--text3)">榕江恒鑫机动车检测站</div>
 </div>
 <div style="border-top:1px solid var(--border);padding-top:12px">
 <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">当前角色</span><span id="profileRole" style="font-weight:500">L1 - 员工</span></div>
-<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">应用版本</span><span style="font-weight:500">v13</span></div>
+<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">应用版本</span><span style="font-weight:500">v14</span></div>
 </div>
 </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay"><div class="modal-content" id="modalContent"></div></div>
 <div class="toast" id="toast"></div>
-<div class="version-badge">v13</div>
+<div class="version-badge">v14</div>
 
 <script>
+// ===== 模拟组织架构人员列表 =====
+const ORG_PERSONNEL = ['艾培刚','程晨','张峻山','李强','王芳','赵明','刘洋','陈静','杨磊','周婷','吴刚','郑丽','孙鹏','黄娟','林峰','何雪','马超','朱红','胡波','郭敏'];
+
 // ===== DATA LAYER =====
-const DB_KEY='fixed_assets_db_v13';
+const DB_KEY='fixed_assets_db_v14';
 const DEFAULT_CATEGORY_TREE = {
   '电子设备': { '计算机': ['ThinkPad笔记本', '台式电脑', '服务器'], '外设': ['打印机', '扫描仪', '投影仪'], '通信': ['对讲机', '电话机'] },
   '仪器仪表': { '检测设备': ['示波器', '万用表', '频谱分析仪'], '计量工具': ['游标卡尺', '千分尺', '天平'] },
@@ -280,23 +286,21 @@ const DEFAULT_LOCATION_TREE = {
   '办公区域': { '办公楼1层': ['办公室101', '办公室102', '会议室'], '办公楼2层': ['办公室201', '办公室202', '档案室'] },
   '仓储区域': { '仓库A': ['货架区', '设备区', '耗材区'], '仓库B': ['备件区', '工具区'] },
   '外场': { '停车场': ['东侧车位', '西侧车位'], '厂区': ['大门岗', '空地'] }
-};
-
-function getDB(){
+};function getDB(){
   const r=localStorage.getItem(DB_KEY);
   if(r){try{return JSON.parse(r)}catch(e){}}
   const db={assets:[],approvals:[],approvalFlows:{},auditLogs:[],
     categoryTree:JSON.parse(JSON.stringify(DEFAULT_CATEGORY_TREE)),
     locationTree:JSON.parse(JSON.stringify(DEFAULT_LOCATION_TREE)),
     permissions:{admins:[],superAdmins:['艾培刚']},
-    nextApprovalId:1,nextAssetId:1,locations:['办公室A','办公室B','仓库1','仓库2','检测车间']};
+    nextApprovalId:1,nextAssetId:1};
   saveDB(db);return db;
 }
 function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
 function addAuditLog(d,a,dt){d.auditLogs.unshift({id:Date.now(),time:new Date().toLocaleString('zh-CN'),action:a,detail:dt,user:'艾培刚'})}
 let currentRole='L1', currentPage='l1-home';
 
-// ===== IMAGE UPLOAD (自动压缩, ≤9张) =====
+// ===== IMAGE UPLOAD =====
 const imageStores={return:[],repair:[],scrap:[]};
 function compressImage(file,ms){
   return new Promise((resolve)=>{
@@ -347,13 +351,13 @@ function showPage(id){
 }
 function goBack(){showPage(currentRole.toLowerCase()+'-home')}
 
-// ===== PERMISSION SYSTEM =====
+// ===== PERMISSION =====
 function checkPerm(){
   const db=getDB(),user='艾培刚';
   if(!db.permissions)db.permissions={admins:[],superAdmins:['艾培刚']};
   const sa=db.permissions.superAdmins.includes(user);
   return{isSuperAdmin:sa,isAdmin:sa||db.permissions.admins.includes(user),isEmployee:true};
-}// ===== SWITCH ROLE (权限控制) =====
+}
 function switchRole(r){
   const perm=checkPerm();
   if(r==='L3'&&!perm.isSuperAdmin){showToast('您没有超管权限');return}
@@ -370,8 +374,6 @@ function switchRole(r){
   document.getElementById('profileRole').textContent=r+' - '+(n[r]||'');
   showPage(r.toLowerCase()+'-home');
 }
-
-// ===== TOAST =====
 function showToast(m){
   const t=document.getElementById('toast');t.textContent=m;
   t.classList.remove('show');void t.offsetWidth;t.classList.add('show');
@@ -381,14 +383,13 @@ function openModal(h){document.getElementById('modalContent').innerHTML=h;docume
 function closeModal(){document.getElementById('modalOverlay').classList.remove('active')}
 document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
-// ===== REFRESH =====
 function refreshPage(id){
   if(id==='l1-home'){renderMyRequests();renderMyAssets()}
   else if(id==='l1-apply')loadApplyCategories();
   else if(id==='l1-return')loadMyAssetsSelect('returnAsset');
   else if(id==='l1-repair')loadAssetSelect('repairAsset');
   else if(id==='l1-scrap')loadAssetSelect('scrapAsset');
-  else if(id==='l2-home'){updateStats();renderCharts();renderApprovals();renderAssetTable();renderRecords()}
+  else if(id==='l2-home'){updateStats();renderCharts();renderApprovals();renderAssetTable();renderRecords();renderWarningPanel();renderDuePanel();renderCheckPanel()}
   else if(id==='l3-locations')renderLocations();
   else if(id==='l3-categories')renderCategoryTree();
   else if(id==='l3-approval-flow')renderFlowConfig();
@@ -396,13 +397,15 @@ function refreshPage(id){
   else if(id==='l3-admin-mgmt')renderAdminMgmt();
 }
 
-// ===== L1: APPLY 三级分类+搜索 =====
+// ===== L1: APPLY (库存为0提示) =====
 function loadApplyCategories(){
   const db=getDB(),tree=db.categoryTree||{};
   const s1=document.getElementById('applyCatL1');
   s1.innerHTML='<option value="">请选择一级分类</option>'+Object.keys(tree).map(k=>'<option value="'+k+'">'+k+'</option>').join('');
   document.getElementById('applyCatL2Group').style.display='none';
   document.getElementById('applyCatL3Group').style.display='none';
+  document.getElementById('applyStockInfo').style.display='none';
+  document.getElementById('applySubmitBtn').disabled=false;
 }
 function onApplyCatL1Change(){
   const l1=document.getElementById('applyCatL1').value,db=getDB(),tree=db.categoryTree||{};
@@ -411,37 +414,72 @@ function onApplyCatL1Change(){
   g2.style.display='block';
   s2.innerHTML='<option value="">请选择二级分类</option>'+Object.keys(tree[l1]||{}).map(k=>'<option value="'+k+'">'+k+'</option>').join('');
   document.getElementById('applyCatL3Group').style.display='none';
+  document.getElementById('applyStockInfo').style.display='none';
 }
 function onApplyCatL2Change(){
   const l1=document.getElementById('applyCatL1').value,l2=document.getElementById('applyCatL2').value;
   const db=getDB(),tree=db.categoryTree||{};
   const g3=document.getElementById('applyCatL3Group'),s3=document.getElementById('applyCatL3');
-  if(!l1||!l2){g3.style.display='none';return}
+  if(!l1||!l2){g3.style.display='none';document.getElementById('applyStockInfo').style.display='none';return}
   g3.style.display='block';
   const items=tree[l1]?.[l2]||[];
   const kw=document.getElementById('applyAssetSearch').value;
   const filtered=kw?items.filter(i=>i.includes(kw)):items;
   s3.innerHTML=filtered.map(a=>'<option value="'+a+'">'+a+'</option>').join('');
+  document.getElementById('applyStockInfo').style.display='none';
 }
 function onApplyAssetSearch(){
   const l1=document.getElementById('applyCatL1').value,l2=document.getElementById('applyCatL2').value;
   if(l1&&l2)onApplyCatL2Change();
 }
-
-// ===== L1: SUBMIT APPLY (适配三级分类) =====
+function onApplyL3Select(){
+  checkApplyStock();
+}
+function onApplyQtyChange(){
+  checkApplyStock();
+}
+function checkApplyStock(){
+  const name=document.getElementById('applyCatL3').value;
+  const qty=parseInt(document.getElementById('applyQty').value)||1;
+  const info=document.getElementById('applyStockInfo');
+  const btn=document.getElementById('applySubmitBtn');
+  if(!name){info.style.display='none';btn.disabled=false;return}
+  const db=getDB();
+  const matched=db.assets.filter(a=>a.name===name);
+  const totalStock=matched.reduce((s,a)=>s+(a.quantity||1),0);
+  if(totalStock<=0){
+    info.style.display='block';
+    info.style.background='#fff2f0';
+    info.style.color='#cf1322';
+    info.innerHTML='⚠️ 该资产暂无库存，暂不可领用';
+    btn.disabled=true;
+  }else if(totalStock<qty){
+    info.style.display='block';
+    info.style.background='#fffbe6';
+    info.style.color='#ad8b00';
+    info.innerHTML='⚠️ 当前库存仅 '+totalStock+' 件，不足您申请的 '+qty+' 件';
+    btn.disabled=true;
+  }else{
+    info.style.display='block';
+    info.style.background='#f6ffed';
+    info.style.color='#389e0d';
+    info.innerHTML='✅ 当前库存 '+totalStock+' 件，可领用';
+    btn.disabled=false;
+  }
+}
 function submitApply(){
   const name=document.getElementById('applyCatL3').value;
   const qty=parseInt(document.getElementById('applyQty').value)||1;
   const purpose=document.getElementById('applyPurpose').value,note=document.getElementById('applyNote').value;
   if(!name){showToast('请选择资产');return}
+  const btn=document.getElementById('applySubmitBtn');
+  if(btn.disabled){showToast('当前资产不可领用');return}
   const db=getDB();
   db.approvals.push({id:db.nextApprovalId++,type:'领用',assetName:name,qty,purpose,note,applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});
   addAuditLog(db,'提交领用申请','资产:'+name+',数量:'+qty);
   saveDB(db);showToast('领用申请已提交 ✅');
   document.getElementById('applyNote').value='';goBack();
-}
-
-// ===== L1: RETURN (磨损联动) =====
+}// ===== L1: RETURN (磨损联动) =====
 function submitReturn(){
   const aid=document.getElementById('returnAsset').value,cond=document.getElementById('returnCondition').value,note=document.getElementById('returnNote').value;
   if(!aid){showToast('请选择资产');return}
@@ -480,8 +518,6 @@ function processWearScrap(aid,note){
   saveDB(db);showToast('归还已提交，已自动生成报废申请 🗑️');
   document.getElementById('returnNote').value='';goBack();
 }
-
-// ===== L1: SUBMIT REPAIR/SCRAP (带图片) =====
 function submitRepair(){
   const aid=document.getElementById('repairAsset').value,desc=document.getElementById('repairDesc').value,urg=document.getElementById('repairUrgency').value;
   if(!aid){showToast('请选择资产');return}
@@ -504,8 +540,6 @@ function submitScrap(){
   saveDB(db);showToast('报废申请已提交 ✅');
   document.getElementById('scrapReason').value='';goBack();
 }
-
-// ===== L1: MY ASSETS (我的领用) =====
 function toggleMyAssets(){
   const e=document.getElementById('myAssets'),a=document.getElementById('myAssetsArrow');
   if(e.style.display==='none'){e.style.display='block';a.textContent='收起 ▴';renderMyAssets()}
@@ -517,11 +551,9 @@ function renderMyAssets(){
   const myIds=myApproved.map(a=>a.assetId);
   const myList=db.assets.filter(a=>myIds.includes(a.id)&&a.status==='在用');
   const el=document.getElementById('myAssetsList');
-  if(myList.length===0){el.innerHTML='<div style="text-align:center;padding:20px 0;color:var(--text3)">暂无领用资产</div>';return}
+  if(myList.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📦</div><div>暂无领用资产</div></div>';return}
   el.innerHTML=myList.map(a=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+a.name+'</div><div class="approval-meta">编号:'+a.code+' · '+a.location+'</div></div><span class="badge badge-inuse">在用</span></div>').join('');
 }
-
-// ===== L1: MY REQUESTS =====
 function toggleMyRequests(){
   const e=document.getElementById('myRequests'),a=document.getElementById('requestArrow');
   if(e.style.display==='none'){e.style.display='block';a.textContent='收起 ▴';renderMyRequests()}
@@ -530,15 +562,13 @@ function toggleMyRequests(){
 function renderMyRequests(){
   const db=getDB(),list=db.approvals.filter(a=>a.applicant==='艾培刚');
   const el=document.getElementById('myRequestsList');
-  if(list.length===0){el.innerHTML='<div style="text-align:center;padding:20px 0;color:var(--text3)">暂无申请记录</div>';return}
+  if(list.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📄</div><div>暂无申请记录</div></div>';return}
   const sm={'待审批':'badge-pending','已通过':'badge-approved','已拒绝':'badge-rejected'};
   el.innerHTML=list.map(a=>{
     const asset=db.assets.find(x=>x.id===a.assetId);
     return '<div class="approval-item"><div class="approval-info"><div class="approval-title">'+a.type+'申请 - '+(asset?asset.name:a.assetName||'未知')+'</div><div class="approval-meta">'+a.time+' <span class="badge '+(sm[a.status]||'')+'">'+a.status+'</span></div></div></div>';
   }).join('');
 }
-
-// ===== L1: ASSET SELECT HELPERS =====
 function loadAssetSelect(sid){
   const db=getDB(),sel=document.getElementById(sid);
   if(!sel)return;
@@ -552,15 +582,19 @@ function loadMyAssetsSelect(sid){
   db.assets.filter(a=>a.status==='在用').forEach(a=>{sel.innerHTML+='<option value="'+a.id+'">'+a.code+' - '+a.name+'</option>'});
 }
 
-// ===== L2: STATS & CHARTS =====
+// ===== L2: STATS (含送检/需检定) =====
 function updateStats(){
   const db=getDB(),total=db.assets.length,inUse=db.assets.filter(a=>a.status==='在用').length,
     idle=db.assets.filter(a=>a.status==='闲置'||a.status==='备用').length,
-    repair=db.assets.filter(a=>a.status==='维修中').length;
+    repair=db.assets.filter(a=>a.status==='维修中').length,
+    inspect=db.assets.filter(a=>a.status==='送检').length,
+    due=db.assets.filter(a=>a.status==='需检定').length;
   document.getElementById('statTotal').textContent=total;
   document.getElementById('statInUse').textContent=inUse;
   document.getElementById('statIdle').textContent=idle;
   document.getElementById('statRepair').textContent=repair;
+  document.getElementById('statInspect').textContent=inspect;
+  document.getElementById('statDue').textContent=due;
 }
 function jumpToAssetList(filter){
   const tabs=document.querySelectorAll('.tab-item');
@@ -569,34 +603,91 @@ function jumpToAssetList(filter){
   document.getElementById('l2-approvals').style.display='none';
   document.getElementById('l2-assets').style.display='block';
   document.getElementById('l2-records').style.display='none';
-  if(filter!=='all')document.getElementById('assetSearch').value=filter;
+  document.getElementById('assetSearch').value=filter==='all'?'':filter;
   renderAssetTable();
 }
 
-// ===== L2: CHARTS =====
-function renderCharts(){renderCategoryChart();renderTrendChart()}
+// ===== L2: CHARTS (新增状态分布+排行) =====
+function renderCharts(){renderCategoryChart();renderTrendChart();renderStatusChart();renderRankingChart()}
 function renderCategoryChart(){
   const db=getDB(),el=document.getElementById('chartCategory');
   if(!el)return;
   const map={};db.assets.forEach(a=>{map[a.category]=(map[a.category]||0)+1});
   const data=Object.entries(map).map(([k,v])=>({name:k,value:v}));
-  if(data.length===0){el.innerHTML='<div style="text-align:center;padding:60px 0;color:var(--text3)">暂无资产数据</div>';return}
-  const chart=echarts.init(el);
-  chart.setOption({tooltip:{trigger:'item'},legend:{bottom:0,textStyle:{fontSize:11}},series:[{type:'pie',radius:['30%','60%'],center:['50%','40%'],data,label:{fontSize:11},itemStyle:{borderRadius:4}}]});
-  window.addEventListener('resize',()=>chart.resize());
+  if(data.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📊</div><div>暂无资产数据</div></div>';return}
+  try{const chart=echarts.init(el);chart.setOption({tooltip:{trigger:'item'},legend:{bottom:0,textStyle:{fontSize:11}},series:[{type:'pie',radius:['30%','60%'],center:['50%','40%'],data,label:{fontSize:11},itemStyle:{borderRadius:4}}]});window.addEventListener('resize',()=>chart.resize())}catch(e){}
 }
 function renderTrendChart(){
   const db=getDB(),el=document.getElementById('chartTrend');
   if(!el)return;
   const map={};db.approvals.filter(a=>a.type==='领用').forEach(a=>{const d=a.time.slice(0,10);map[d]=(map[d]||0)+1});
   const dates=Object.keys(map).sort(),values=dates.map(d=>map[d]);
-  if(dates.length===0){el.innerHTML='<div style="text-align:center;padding:60px 0;color:var(--text3)">暂无领用数据</div>';return}
-  const chart=echarts.init(el);
-  chart.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:dates,axisLabel:{fontSize:10}},yAxis:{type:'value'},series:[{type:'line',data:values,smooth:true,lineStyle:{color:'#1677ff',width:2},areaStyle:{color:'rgba(22,119,255,0.1)'},itemStyle:{color:'#1677ff'}}]});
-  window.addEventListener('resize',()=>chart.resize());
+  if(dates.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📈</div><div>暂无领用数据</div></div>';return}
+  try{const chart=echarts.init(el);chart.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:dates,axisLabel:{fontSize:10}},yAxis:{type:'value'},series:[{type:'line',data:values,smooth:true,lineStyle:{color:'#1677ff',width:2},areaStyle:{color:'rgba(22,119,255,0.1)'},itemStyle:{color:'#1677ff'}}]});window.addEventListener('resize',()=>chart.resize())}catch(e){}
+}
+function renderStatusChart(){
+  const db=getDB(),el=document.getElementById('chartStatus');
+  if(!el)return;
+  const map={};db.assets.forEach(a=>{map[a.status]=(map[a.status]||0)+1});
+  const data=Object.entries(map).map(([k,v])=>({name:k,value:v}));
+  if(data.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📊</div><div>暂无数据</div></div>';return}
+  try{const chart=echarts.init(el);chart.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:data.map(d=>d.name),axisLabel:{fontSize:10,rotate:15}},yAxis:{type:'value'},series:[{type:'bar',data:data.map(d=>d.value),itemStyle:{borderRadius:[4,4,0,0],color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#1677ff'},{offset:1,color:'#69b1ff'}])}}]});window.addEventListener('resize',()=>chart.resize())}catch(e){}
+}
+function renderRankingChart(){
+  const db=getDB(),el=document.getElementById('chartRanking');
+  if(!el)return;
+  const map={};db.assets.forEach(a=>{map[a.category]=(map[a.category]||0)+1});
+  const data=Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({name:k,value:v}));
+  if(data.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📊</div><div>暂无数据</div></div>';return}
+  try{const chart=echarts.init(el);chart.setOption({tooltip:{trigger:'axis'},xAxis:{type:'value'},yAxis:{type:'category',data:data.map(d=>d.name).reverse(),axisLabel:{fontSize:11}},series:[{type:'bar',data:data.map(d=>d.value).reverse(),itemStyle:{borderRadius:[0,4,4,0],color:new echarts.graphic.LinearGradient(0,0,1,0,[{offset:0,color:'#52c41a'},{offset:1,color:'#95de64'}])}}]});window.addEventListener('resize',()=>chart.resize())}catch(e){}
 }
 
-// ===== L2: APPROVALS =====
+// ===== L2: 预警面板 =====
+function renderWarningPanel(){
+  const db=getDB(),el=document.getElementById('warningPanel'),list=document.getElementById('warningList');
+  const warned=db.assets.filter(a=>a.warningLine>0&&a.quantity<=a.warningLine);
+  if(warned.length===0){el.style.display='none';return}
+  el.style.display='block';
+  document.getElementById('warningCount').textContent=warned.length;
+  list.innerHTML=warned.map(a=>'<div class="warning-card"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+a.name+'</strong><span style="color:var(--danger);font-weight:600">库存:'+(a.quantity||0)+'</span></div><div style="font-size:12px;color:var(--text2);margin-top:4px">编号:'+a.code+' · 预警线:'+a.warningLine+'</div></div>').join('');
+}
+
+// ===== L2: 到期提示面板 =====
+function renderDuePanel(){
+  const db=getDB(),el=document.getElementById('duePanel'),list=document.getElementById('dueList');
+  const now=Date.now();
+  const dueItems=db.assets.filter(a=>a.checkDueDate);
+  if(dueItems.length===0){el.style.display='none';return}
+  const expiring=dueItems.filter(a=>{
+    const t=new Date(a.checkDueDate).getTime();
+    return t>0&&t<=now+30*24*3600*1000;
+  });
+  if(expiring.length===0){el.style.display='none';return}
+  el.style.display='block';
+  document.getElementById('dueCount').textContent=expiring.length;
+  list.innerHTML=expiring.map(a=>{
+    const t=new Date(a.checkDueDate).getTime();
+    const expired=t<=now;
+    return '<div class="warning-card'+(expired?'':' warn')+'"><div style="display:flex;justify-content:space-between;align-items:center"><strong>'+a.name+'</strong><span style="color:'+(expired?'var(--danger)':'var(--warning)')+';font-weight:600">'+(expired?'已过期':'即将到期')+'</span></div><div style="font-size:12px;color:var(--text2);margin-top:4px">编号:'+a.code+' · 到检日期:'+a.checkDueDate+'</div></div>';
+  }).join('');
+}
+
+// ===== L2: 盘点面板 =====
+function renderCheckPanel(){
+  const db=getDB(),el=document.getElementById('checkPanel'),list=document.getElementById('checkList');
+  const needCheck=db.assets.filter(a=>a.needCheck&&!a.lastCheckDate);
+  if(needCheck.length===0){el.style.display='none';return}
+  el.style.display='block';
+  document.getElementById('checkCount').textContent=needCheck.length;
+  list.innerHTML=needCheck.map(a=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+a.name+'</div><div class="approval-meta">编号:'+a.code+' · 存放:'+a.location+'</div></div><button class="btn btn-success btn-sm" onclick="doCheckAsset('+a.id+')">确认盘点</button></div>').join('');
+}
+function doCheckAsset(id){
+  const db=getDB(),a=db.assets.find(x=>x.id===id);
+  if(!a)return;
+  a.lastCheckDate=new Date().toLocaleDateString('zh-CN');
+  addAuditLog(db,'完成盘点','资产:'+a.code+' - '+a.name);
+  saveDB(db);showToast('盘点完成 ✅');renderCheckPanel();
+}// ===== L2: APPROVALS =====
 function renderApprovals(){
   const db=getDB(),pending=db.approvals.filter(a=>a.status==='待审批');
   document.getElementById('pendingCount').textContent=pending.length;
@@ -628,7 +719,7 @@ function reject(id){
   saveDB(db);showToast('已拒绝');renderApprovals();
 }
 
-// ===== L2: ASSET TABLE =====
+// ===== L2: ASSET TABLE (扩展字段) =====
 function renderAssetTable(){
   const db=getDB(),q=document.getElementById('assetSearch').value.toLowerCase();
   let list=db.assets;
@@ -638,27 +729,37 @@ function renderAssetTable(){
     list=[...new Set([...nameMatch,...statusMatch])];
   }
   const tbody=document.getElementById('assetTableBody');
-  if(list.length===0){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:30px 0">暂无资产数据</td></tr>';return}
-  const sm={'在用':'badge-inuse','闲置':'badge-idle','备用':'badge-idle','维修中':'badge-repair','已报废':'badge-scrap'};
-  tbody.innerHTML=list.map(a=>'<tr><td>'+a.code+'</td><td>'+a.name+'</td><td><span class="badge '+(sm[a.status]||'badge-idle')+'">'+a.status+'</span></td><td><button class="btn btn-sm btn-outline" onclick="editAsset('+a.id+')">编辑</button><button class="btn btn-sm btn-primary" onclick="printAssetLabel('+a.id+')" style="margin-left:4px">🖨️</button></td></tr>').join('');
+  if(list.length===0){tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--text3);padding:30px 0">暂无资产数据</td></tr>';return}
+  const sm={'在用':'badge-inuse','闲置':'badge-idle','备用':'badge-idle','维修中':'badge-repair','已报废':'badge-scrap','送检':'badge-inspect','需检定':'badge-due'};
+  tbody.innerHTML=list.map(a=>'<tr><td>'+a.code+'</td><td>'+a.name+'</td><td>'+(a.categorySub?a.category+'/'+a.categorySub:a.category)+'</td><td><span class="badge '+(sm[a.status]||'badge-idle')+'">'+a.status+'</span></td><td>'+(a.model||'-')+'</td><td>'+(a.spec||'-')+'</td><td>'+(a.quantity||1)+'</td><td>'+(a.price?a.price.toFixed(2):'-')+'</td><td>'+(a.remark||'-')+'</td><td><button class="btn btn-sm btn-outline" onclick="editAssetV14('+a.id+')">编辑</button><button class="btn btn-sm btn-primary" onclick="printAssetLabel('+a.id+')" style="margin-left:4px">🖨️</button></td></tr>').join('');
 }
 
-// ===== L2: ADD ASSET V13 (三级分类+三级地点+自定义状态+自动编码) =====
-function showAddAssetV13(){
+// ===== L2: ADD ASSET V14 (扩展字段+不选择+预警线+到检时间+盘点) =====
+let newAssetImages=[];
+function showAddAssetV14(){
   const db=getDB(),tree=db.categoryTree||{},ltree=db.locationTree||{};
   openModal('<div class="modal-title">新增资产<button class="modal-close" onclick="closeModal()">✕</button></div>'+
     '<div class="form-group"><label class="form-label">资产名称</label><input class="form-input" id="newAssetName" placeholder="请输入资产名称"></div>'+
+    '<div class="form-group"><label class="form-label">型号</label><input class="form-input" id="newAssetModel" placeholder="如 ThinkPad X1 Carbon"></div>'+
+    '<div class="form-group"><label class="form-label">规格</label><input class="form-input" id="newAssetSpec" placeholder="如 14寸/i7/16GB"></div>'+
+    '<div class="form-group"><label class="form-label">数量</label><input class="form-input" type="number" id="newAssetQty" value="1" min="1"></div>'+
+    '<div class="form-group"><label class="form-label">价格（元）</label><input class="form-input" type="number" id="newAssetPrice" placeholder="0.00" step="0.01" min="0"></div>'+
     '<div class="form-group"><label class="form-label">一级分类</label><select class="form-select" id="newCatL1" onchange="onNewCatL1Change()"><option value="">请选择</option>'+Object.keys(tree).map(k=>'<option value="'+k+'">'+k+'</option>').join('')+'</select></div>'+
     '<div class="form-group" id="newCatL2Group" style="display:none"><label class="form-label">二级分类</label><select class="form-select" id="newCatL2" onchange="onNewCatL2Change()"><option value="">请选择</option></select></div>'+
-    '<div class="form-group" id="newCatL3Group" style="display:none"><label class="form-label">三级分类</label><select class="form-select" id="newCatL3"></select></div>'+
+    '<div class="form-group" id="newCatL3Group" style="display:none"><label class="form-label">三级分类</label><select class="form-select" id="newCatL3"><option value="">不选择</option></select></div>'+
     '<div class="form-group"><label class="form-label">一级地点</label><select class="form-select" id="newLocL1" onchange="onNewLocL1Change()"><option value="">请选择</option>'+Object.keys(ltree).map(k=>'<option value="'+k+'">'+k+'</option>').join('')+'</select></div>'+
     '<div class="form-group" id="newLocL2Group" style="display:none"><label class="form-label">二级地点</label><select class="form-select" id="newLocL2" onchange="onNewLocL2Change()"><option value="">请选择</option></select></div>'+
-    '<div class="form-group" id="newLocL3Group" style="display:none"><label class="form-label">三级地点</label><select class="form-select" id="newLocL3"></select></div>'+
-    '<div class="form-group"><label class="form-label">状态</label><div style="display:flex;gap:8px;align-items:center"><select class="form-select" id="newAssetStatus" style="flex:1" onchange="onNewStatusChange()"><option>闲置</option><option>备用</option><option>在用</option><option>自定义</option></select><input class="form-input" id="newCustomStatus" placeholder="输入自定义状态..." style="flex:1;display:none" oninput="updateAssetCode()"></div></div>'+
+    '<div class="form-group" id="newLocL3Group" style="display:none"><label class="form-label">三级地点</label><select class="form-select" id="newLocL3"><option value="">不选择</option></select></div>'+
+    '<div class="form-group"><label class="form-label">状态</label><div style="display:flex;gap:8px;align-items:center"><select class="form-select" id="newAssetStatus" style="flex:1" onchange="onNewStatusChange()"><option>闲置</option><option>备用</option><option>在用</option><option>送检</option><option>需检定</option><option>自定义</option></select><input class="form-input" id="newCustomStatus" placeholder="输入自定义..." style="flex:1;display:none" oninput="updateAssetCode()"></div></div>'+
     '<div class="form-group"><label class="form-label">🔢 自动编码</label><input class="form-input" id="newAssetCode" readonly style="background:#f5f5f5;font-family:monospace"></div>'+
+    '<div class="form-group"><label class="form-label">⚠️ 库存预警线</label><input class="form-input" type="number" id="newWarningLine" value="2" min="0" placeholder="低于此数量时预警"></div>'+
+    '<div class="form-group" id="checkDueGroup" style="display:none"><label class="form-label">⏰ 到检时间</label><input class="form-input" type="date" id="newCheckDueDate"></div>'+
+    '<div class="form-group"><label class="form-label"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="newNeedCheck"> 需要定期盘点</label></label></div>'+
+    '<div class="form-group"><label class="form-label">备注</label><textarea class="form-textarea" id="newAssetRemark" placeholder="可选填写备注..."></textarea></div>'+
     '<div class="form-group"><label class="form-label">📷 资产图片</label><div class="image-preview" id="assetImages"></div><button class="btn btn-sm btn-outline" onclick="document.getElementById(\'assetFileInput\').click()">+ 添加图片</button><input type="file" id="assetFileInput" accept="image/*" multiple style="display:none" onchange="handleAssetImageUpload(event)"></div>'+
-    '<button class="btn btn-primary btn-block" onclick="saveNewAssetV13()">保存</button>');
-}let newAssetImages=[];
+    '<button class="btn btn-primary btn-block" onclick="saveNewAssetV14()">保存</button>');
+  newAssetImages=[];
+}
 async function handleAssetImageUpload(ev){
   const files=ev.target.files,rl=9-newAssetImages.length;
   if(files.length>rl){showToast('最多还能上传 '+rl+' 张');return}
@@ -682,18 +783,24 @@ function removeAssetImage(i){newAssetImages.splice(i,1);renderAssetImagePreview(
 function onNewCatL1Change(){
   const l1=document.getElementById('newCatL1').value,db=getDB(),tree=db.categoryTree||{};
   const g2=document.getElementById('newCatL2Group'),s2=document.getElementById('newCatL2');
-  if(!l1){g2.style.display='none';document.getElementById('newCatL3Group').style.display='none';updateAssetCode();return}
+  if(!l1){g2.style.display='none';document.getElementById('newCatL3Group').style.display='none';updateAssetCode();toggleCheckDue();return}
   g2.style.display='block';
   s2.innerHTML='<option value="">请选择</option>'+Object.keys(tree[l1]||{}).map(k=>'<option value="'+k+'">'+k+'</option>').join('');
-  document.getElementById('newCatL3Group').style.display='none';updateAssetCode();
+  document.getElementById('newCatL3Group').style.display='none';updateAssetCode();toggleCheckDue();
 }
 function onNewCatL2Change(){
   const l1=document.getElementById('newCatL1').value,l2=document.getElementById('newCatL2').value;
   const db=getDB(),tree=db.categoryTree||{};
   const g3=document.getElementById('newCatL3Group'),s3=document.getElementById('newCatL3');
-  if(!l1||!l2){g3.style.display='none';updateAssetCode();return}
+  if(!l1||!l2){g3.style.display='none';updateAssetCode();toggleCheckDue();return}
   g3.style.display='block';
-  s3.innerHTML=(tree[l1]?.[l2]||[]).map(a=>'<option>'+a+'</option>').join('');updateAssetCode();
+  s3.innerHTML='<option value="">不选择</option>'+(tree[l1]?.[l2]||[]).map(a=>'<option>'+a+'</option>').join('');
+  updateAssetCode();toggleCheckDue();
+}
+function toggleCheckDue(){
+  const l1=document.getElementById('newCatL1').value,l2=document.getElementById('newCatL2').value;
+  const g=document.getElementById('checkDueGroup');
+  g.style.display=(l1==='仪器仪表'&&l2==='检测设备')?'block':'none';
 }
 function onNewLocL1Change(){
   const l1=document.getElementById('newLocL1').value,db=getDB(),ltree=db.locationTree||{};
@@ -709,7 +816,7 @@ function onNewLocL2Change(){
   const g3=document.getElementById('newLocL3Group'),s3=document.getElementById('newLocL3');
   if(!l1||!l2){g3.style.display='none';return}
   g3.style.display='block';
-  s3.innerHTML=(ltree[l1]?.[l2]||[]).map(a=>'<option>'+a+'</option>').join('');
+  s3.innerHTML='<option value="">不选择</option>'+(ltree[l1]?.[l2]||[]).map(a=>'<option>'+a+'</option>').join('');
 }
 function onNewStatusChange(){
   document.getElementById('newCustomStatus').style.display=document.getElementById('newAssetStatus').value==='自定义'?'block':'none';
@@ -722,7 +829,7 @@ function updateAssetCode(){
   const seq=String(db.nextAssetId).padStart(6,'0');
   document.getElementById('newAssetCode').value='HX02-'+prefix+sub+'-'+seq;
 }
-function saveNewAssetV13(){
+function saveNewAssetV14(){
   const name=document.getElementById('newAssetName').value.trim(),code=document.getElementById('newAssetCode').value;
   if(!name){showToast('请输入资产名称');return}
   if(!code){showToast('请选择完整的三级分类');return}
@@ -731,28 +838,52 @@ function saveNewAssetV13(){
   if(status==='自定义')status=document.getElementById('newCustomStatus').value.trim()||'其他';
   const locL1=document.getElementById('newLocL1').value,locL2=document.getElementById('newLocL2').value,locL3=document.getElementById('newLocL3').value;
   const fullLoc=[locL1,locL2,locL3].filter(Boolean).join(' - ');
-  db.assets.push({id:db.nextAssetId++,name,code,category:document.getElementById('newCatL1').value,categorySub:document.getElementById('newCatL2').value,location:fullLoc,status,images:newAssetImages.slice(),createdAt:Date.now()});
+  const model=document.getElementById('newAssetModel').value.trim();
+  const spec=document.getElementById('newAssetSpec').value.trim();
+  const qty=parseInt(document.getElementById('newAssetQty').value)||1;
+  const price=parseFloat(document.getElementById('newAssetPrice').value)||0;
+  const warningLine=parseInt(document.getElementById('newWarningLine').value)||0;
+  const checkDueDate=document.getElementById('newCheckDueDate').value||'';
+  const needCheck=document.getElementById('newNeedCheck').checked;
+  const remark=document.getElementById('newAssetRemark').value.trim();
+  db.assets.push({id:db.nextAssetId++,name,code,category:document.getElementById('newCatL1').value,categorySub:document.getElementById('newCatL2').value,location:fullLoc,status,images:newAssetImages.slice(),createdAt:Date.now(),model,spec,quantity:qty,price,warningLine,checkDueDate,needCheck,lastCheckDate:'',remark});
   addAuditLog(db,'新增资产','编号:'+code+',名称:'+name);
   newAssetImages=[];saveDB(db);closeModal();showToast('资产添加成功 ✅');
   renderAssetTable();updateStats();
 }
 
-// ===== L2: EDIT ASSET =====
-function editAsset(id){
+// ===== L2: EDIT ASSET V14 (扩展字段) =====
+function editAssetV14(id){
   const db=getDB(),a=db.assets.find(x=>x.id===id);
   if(!a)return;
-  const sts=['闲置','备用','在用','维修中','已报废'];
+  const sts=['闲置','备用','在用','维修中','送检','需检定','已报废'];
   openModal('<div class="modal-title">编辑资产<button class="modal-close" onclick="closeModal()">✕</button></div>'+
     '<div class="form-group"><label class="form-label">资产名称</label><input class="form-input" id="editAssetName" value="'+a.name+'"></div>'+
+    '<div class="form-group"><label class="form-label">型号</label><input class="form-input" id="editAssetModel" value="'+(a.model||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label">规格</label><input class="form-input" id="editAssetSpec" value="'+(a.spec||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label">数量</label><input class="form-input" type="number" id="editAssetQty" value="'+(a.quantity||1)+'" min="1"></div>'+
+    '<div class="form-group"><label class="form-label">价格（元）</label><input class="form-input" type="number" id="editAssetPrice" value="'+(a.price||0)+'" step="0.01"></div>'+
     '<div class="form-group"><label class="form-label">状态</label><select class="form-select" id="editAssetStatus">'+sts.map(s=>'<option'+(s===a.status?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+
-    '<button class="btn btn-primary btn-block" onclick="saveEditAsset('+id+')">保存修改</button>');
+    '<div class="form-group"><label class="form-label">⚠️ 预警线</label><input class="form-input" type="number" id="editWarningLine" value="'+(a.warningLine||0)+'" min="0"></div>'+
+    '<div class="form-group" id="editCheckDueGroup" style="display:'+(a.checkDueDate?'block':'none')+'"><label class="form-label">⏰ 到检时间</label><input class="form-input" type="date" id="editCheckDueDate" value="'+(a.checkDueDate||'')+'"></div>'+
+    '<div class="form-group"><label class="form-label"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="editNeedCheck"'+(a.needCheck?' checked':'')+'> 需要定期盘点</label></label></div>'+
+    '<div class="form-group"><label class="form-label">备注</label><textarea class="form-textarea" id="editAssetRemark">'+(a.remark||'')+'</textarea></div>'+
+    '<button class="btn btn-primary btn-block" onclick="saveEditAssetV14('+id+')">保存修改</button>');
 }
-function saveEditAsset(id){
+function saveEditAssetV14(id){
   const db=getDB(),a=db.assets.find(x=>x.id===id);
   if(!a)return;
   const name=document.getElementById('editAssetName').value.trim();
   if(!name){showToast('请输入资产名称');return}
   a.name=name;a.status=document.getElementById('editAssetStatus').value;
+  a.model=document.getElementById('editAssetModel').value.trim();
+  a.spec=document.getElementById('editAssetSpec').value.trim();
+  a.quantity=parseInt(document.getElementById('editAssetQty').value)||1;
+  a.price=parseFloat(document.getElementById('editAssetPrice').value)||0;
+  a.warningLine=parseInt(document.getElementById('editWarningLine').value)||0;
+  a.checkDueDate=document.getElementById('editCheckDueDate').value||'';
+  a.needCheck=document.getElementById('editNeedCheck').checked;
+  a.remark=document.getElementById('editAssetRemark').value.trim();
   addAuditLog(db,'编辑资产','编号:'+a.code);
   saveDB(db);closeModal();showToast('修改已保存 ✅');
   renderAssetTable();updateStats();
@@ -784,8 +915,11 @@ function renderRecordList(filter){
 // ===== L3: LOCATIONS =====
 function renderLocations(){
   const db=getDB(),el=document.getElementById('locationList');
-  if(db.locations.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📍</div><div>暂无存放地点</div></div>';return}
-  el.innerHTML=db.locations.map((l,i)=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+l+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteLocation('+i+')">删除</button></div>').join('');
+  if(db.locations&&db.locations.length>0){
+    el.innerHTML=db.locations.map((l,i)=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+l+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteLocation('+i+')">删除</button></div>').join('');
+    return;
+  }
+  el.innerHTML='<div class="empty-state"><div class="icon">📍</div><div>暂无存放地点</div></div>';
 }
 function showAddLocation(){
   openModal('<div class="modal-title">新增存放地点<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">地点名称</label><input class="form-input" id="newLocationName" placeholder="请输入存放地点"></div><button class="btn btn-primary btn-block" onclick="saveNewLocation()">保存</button>');
@@ -793,16 +927,15 @@ function showAddLocation(){
 function saveNewLocation(){
   const name=document.getElementById('newLocationName').value.trim();
   if(!name){showToast('请输入地点名称');return}
-  const db=getDB();db.locations.push(name);
+  const db=getDB();if(!db.locations)db.locations=[];
+  db.locations.push(name);
   addAuditLog(db,'新增存放地点',name);saveDB(db);closeModal();showToast('添加成功 ✅');renderLocations();
 }
 function deleteLocation(i){
   const db=getDB(),name=db.locations[i];
   if(!confirm('确定删除「'+name+'」吗？'))return;
   db.locations.splice(i,1);addAuditLog(db,'删除存放地点',name);saveDB(db);renderLocations();
-}
-
-// ===== L3: CATEGORY TREE (三级树形) =====
+}// ===== L3: CATEGORY TREE =====
 function renderCategoryTree(){
   const db=getDB(),tree=db.categoryTree||{},el=document.getElementById('categoryTreeList');
   if(Object.keys(tree).length===0){el.innerHTML='<div class="empty-state"><div class="icon">📂</div><div>暂无资产分类</div></div>';return}
@@ -869,40 +1002,59 @@ function deleteCatL1(l1){if(!confirm('确定删除一级分类「'+l1+'」及其
 function deleteCatL2(l1,l2){if(!confirm('确定删除二级分类「'+l2+'」及其所有三级分类吗？'))return;const db=getDB();if(db.categoryTree[l1])delete db.categoryTree[l1][l2];addAuditLog(db,'删除二级分类',l2);saveDB(db);renderCategoryTree()}
 function deleteCatL3(l1,l2,l3){if(!confirm('确定删除三级分类「'+l3+'」吗？'))return;const db=getDB();if(db.categoryTree[l1]&&db.categoryTree[l1][l2])db.categoryTree[l1][l2]=db.categoryTree[l1][l2].filter(x=>x!==l3);addAuditLog(db,'删除三级分类',l3);saveDB(db);renderCategoryTree()}
 
-// ===== L3: APPROVAL FLOW (修复选择器) =====
+// ===== L3: APPROVAL FLOW (二级联动+自选人员) =====
 function renderFlowConfig(){
   const db=getDB(),sel=document.getElementById('flowCategory');
   const cur=sel.dataset.selected||'';
   sel.innerHTML='<option value="">请选择分类</option>';
   Object.keys(db.categoryTree||{}).forEach(c=>{sel.innerHTML+='<option value="'+c+'"'+(c===cur?' selected':'')+'>'+c+'</option>'});
-  if(cur)renderFlowNodes(cur);
-  else document.getElementById('flowConfigArea').innerHTML='<div class="empty-state"><div class="icon">🔀</div><div>请先选择资产分类</div></div>';
+  if(cur){onFlowCategoryChange();if(sel.dataset.l2)document.getElementById('flowCatL2').value=sel.dataset.l2;}
+  else{document.getElementById('flowConfigArea').innerHTML='<div class="empty-state"><div class="icon">🔀</div><div>请先选择资产分类</div></div>';document.getElementById('flowCatL2Group').style.display='none'}
 }
 function onFlowCategoryChange(){
-  this.dataset.selected=this.value;renderFlowNodes(this.value);
+  const cat=document.getElementById('flowCategory').value;
+  this.dataset.selected=cat;
+  const db=getDB(),tree=db.categoryTree||{};
+  const l2Sel=document.getElementById('flowCatL2'),l2Group=document.getElementById('flowCatL2Group');
+  if(cat&&tree[cat]){
+    l2Group.style.display='block';
+    l2Sel.innerHTML='<option value="">全部二级分类（按一级配置）</option>'+Object.keys(tree[cat]).map(k=>'<option value="'+k+'">'+k+'</option>').join('');
+  }else{
+    l2Group.style.display='none';
+  }
+  renderFlowNodes(cat,'');
 }
-function renderFlowNodes(cat){
+function onFlowCatL2Change(){
+  const cat=document.getElementById('flowCategory').value;
+  const l2=document.getElementById('flowCatL2').value;
+  this.dataset.selected=cat;
+  document.getElementById('flowCategory').dataset.l2=l2;
+  renderFlowNodes(cat,l2);
+}
+function renderFlowNodes(cat,l2){
   const area=document.getElementById('flowConfigArea');
   if(!cat){area.innerHTML='<div class="empty-state"><div class="icon">🔀</div><div>请先选择资产分类</div></div>';return}
-  const db=getDB(),flow=db.approvalFlows[cat]||{nodes:['申请人','部门主管','管理员']};
-  area.innerHTML='<div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="addFlowNode()">+ 添加审批节点</button></div><div id="flowNodes">'+flow.nodes.map((n,i)=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:var(--rs)"><span style="color:var(--text2);font-size:12px">'+(i+1)+'.</span><input class="form-input" id="flowNode_'+i+'" value="'+n+'" style="flex:1;padding:6px 10px"><button class="btn btn-danger btn-sm" onclick="removeFlowNode('+i+')">✕</button></div>').join('')+'</div>';
+  const db=getDB(),flowKey=l2?cat+'|'+l2:cat;
+  const flow=db.approvalFlows[flowKey]||{nodes:['申请人','管理员']};
+  area.innerHTML='<div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="addFlowNode()">+ 添加审批节点</button></div><div id="flowNodes">'+flow.nodes.map((n,i)=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:var(--rs)"><span style="color:var(--text2);font-size:12px">'+(i+1)+'.</span><select class="form-select" id="flowNode_'+i+'" style="flex:1;padding:6px 10px"><option value="">请选择审批人</option>'+ORG_PERSONNEL.map(p=>'<option value="'+p+'"'+(p===n?' selected':'')+'>'+p+'</option>').join('')+'</select><button class="btn btn-danger btn-sm" onclick="removeFlowNode('+i+')">✕</button></div>').join('')+'</div>';
 }
 function addFlowNode(){
   const area=document.getElementById('flowNodes'),idx=area.children.length;
-  area.innerHTML+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:var(--rs)"><span style="color:var(--text2);font-size:12px">'+(idx+1)+'.</span><input class="form-input" id="flowNode_'+idx+'" value="新节点" style="flex:1;padding:6px 10px"><button class="btn btn-danger btn-sm" onclick="removeFlowNode('+idx+')">✕</button></div>';
+  area.innerHTML+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:var(--rs)"><span style="color:var(--text2);font-size:12px">'+(idx+1)+'.</span><select class="form-select" id="flowNode_'+idx+'" style="flex:1;padding:6px 10px"><option value="">请选择审批人</option>'+ORG_PERSONNEL.map(p=>'<option value="'+p+'">'+p+'</option>').join('')+'</select><button class="btn btn-danger btn-sm" onclick="removeFlowNode('+idx+')">✕</button></div>';
 }
 function removeFlowNode(i){
   const el=document.getElementById('flowNode_'+i);
   if(el){const div=el.closest('div');if(div)div.remove()}
 }
 function saveFlowConfig(){
-  const cat=document.getElementById('flowCategory').value;
+  const cat=document.getElementById('flowCategory').value,l2=document.getElementById('flowCatL2').value;
   if(!cat){showToast('请选择资产分类');return}
   const nodes=[];let i=0;
-  while(true){const el=document.getElementById('flowNode_'+i);if(!el)break;nodes.push(el.value||'审批人');i++}
+  while(true){const el=document.getElementById('flowNode_'+i);if(!el)break;const v=el.value;if(v)nodes.push(v);i++}
   if(nodes.length<2){showToast('至少需要2个审批节点');return}
-  const db=getDB();db.approvalFlows[cat]={nodes};
-  addAuditLog(db,'配置审批流','分类:'+cat+',节点:'+nodes.join('→'));
+  const db=getDB(),flowKey=l2?cat+'|'+l2:cat;
+  db.approvalFlows[flowKey]={nodes};
+  addAuditLog(db,'配置审批流','分类:'+flowKey+',节点:'+nodes.join('→'));
   saveDB(db);showToast('审批流配置已保存 ✅');
 }
 
@@ -913,7 +1065,7 @@ function renderAuditLogs(){
   el.innerHTML=db.auditLogs.map(log=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+log.action+'</div><div class="approval-meta">'+log.user+' · '+log.time+'<br>'+log.detail+'</div></div></div>').join('');
 }
 
-// ===== L3: ADMIN MANAGEMENT =====
+// ===== L3: ADMIN MANAGEMENT (组织架构人员选择) =====
 function renderAdminMgmt(){
   const db=getDB();
   if(!db.permissions)db.permissions={admins:[],superAdmins:['艾培刚']};
@@ -922,12 +1074,12 @@ function renderAdminMgmt(){
   const adEl=document.getElementById('adminList');
   adEl.innerHTML=db.permissions.admins.map((n,i)=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#e6f7ff;border-radius:6px;margin-bottom:4px"><span>🔧 '+n+'</span><button class="btn btn-danger btn-sm" onclick="removeAdmin('+i+')">移除</button></div>').join('');
 }
-function addSuperAdmin(){
-  openModal('<div class="modal-title">添加超管<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">请输入人员姓名</label><input class="form-input" id="newSuperAdminName" placeholder="输入姓名"></div><button class="btn btn-primary btn-block" onclick="saveSuperAdmin()">确认添加</button>');
+function addSuperAdminV14(){
+  openModal('<div class="modal-title">添加超管<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">从组织架构中选择人员</label><select class="form-select" id="newSuperAdminSelect"><option value="">请选择</option>'+ORG_PERSONNEL.map(p=>'<option value="'+p+'">'+p+'</option>').join('')+'</select></div><button class="btn btn-primary btn-block" onclick="saveSuperAdminV14()">确认添加</button>');
 }
-function saveSuperAdmin(){
-  const name=document.getElementById('newSuperAdminName').value.trim();
-  if(!name){showToast('请输入姓名');return}
+function saveSuperAdminV14(){
+  const name=document.getElementById('newSuperAdminSelect').value;
+  if(!name){showToast('请选择人员');return}
   const db=getDB();if(!db.permissions)db.permissions={admins:[],superAdmins:['艾培刚']};
   if(db.permissions.superAdmins.includes(name)){showToast('该用户已是超管');return}
   db.permissions.superAdmins.push(name);
@@ -940,12 +1092,12 @@ function removeSuperAdmin(i){
   db.permissions.superAdmins.splice(i,1);
   addAuditLog(db,'移除超管',name);saveDB(db);renderAdminMgmt();
 }
-function addAdmin(){
-  openModal('<div class="modal-title">添加管理员<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">请输入人员姓名</label><input class="form-input" id="newAdminName" placeholder="输入姓名"></div><button class="btn btn-primary btn-block" onclick="saveAdmin()">确认添加</button>');
+function addAdminV14(){
+  openModal('<div class="modal-title">添加管理员<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">从组织架构中选择人员</label><select class="form-select" id="newAdminSelect"><option value="">请选择</option>'+ORG_PERSONNEL.map(p=>'<option value="'+p+'">'+p+'</option>').join('')+'</select></div><button class="btn btn-primary btn-block" onclick="saveAdminV14()">确认添加</button>');
 }
-function saveAdmin(){
-  const name=document.getElementById('newAdminName').value.trim();
-  if(!name){showToast('请输入姓名');return}
+function saveAdminV14(){
+  const name=document.getElementById('newAdminSelect').value;
+  if(!name){showToast('请选择人员');return}
   const db=getDB();if(!db.permissions)db.permissions={admins:[],superAdmins:['艾培刚']};
   if(db.permissions.admins.includes(name)||db.permissions.superAdmins.includes(name)){showToast('该用户已有权限');return}
   db.permissions.admins.push(name);
@@ -958,7 +1110,7 @@ function removeAdmin(i){
   addAuditLog(db,'移除管理员',name);saveDB(db);renderAdminMgmt();
 }
 
-// ===== QR CODE PRINT (精臣适配) =====
+// ===== QR CODE PRINT =====
 function printAssetLabel(id){
   const db=getDB(),asset=db.assets.find(x=>x.id===id);
   if(!asset){showToast('资产不存在');return}
@@ -980,11 +1132,10 @@ function doPrintLabel(id){
   saveDB(db);
 }
 
-// ===== INIT =====
+// ===== INIT DEMO =====
 (function initDemo(){
   const db=getDB();
   if(db.assets.length>0)return;
-  // 从三级分类生成示例资产
   const tree=db.categoryTree;
   let seq=0;
   Object.entries(tree).forEach(([l1,l2Map])=>{
@@ -994,8 +1145,8 @@ function doPrintLabel(id){
         const prefix=CAT_CODE_MAP[l1]?.prefix||'QT',sub=CAT_CODE_MAP[l1]?.children?.[l2]||'XX';
         const code='HX02-'+prefix+sub+'-'+String(seq).padStart(6,'0');
         const locs=['检测区域 - 1号检测车间 - 工位A','办公区域 - 办公楼1层 - 办公室101','仓储区域 - 仓库A - 货架区','外场 - 停车场 - 东侧车位'];
-        const sts=['在用','闲置','维修中','已报废'];
-        db.assets.push({id:db.nextAssetId++,name:l3,code,category:l1,categorySub:l2,location:locs[seq%locs.length],status:sts[seq%sts.length],images:[],createdAt:Date.now()});
+        const sts=['在用','闲置','维修中','送检','需检定','已报废'];
+        db.assets.push({id:db.nextAssetId++,name:l3,code,category:l1,categorySub:l2,location:locs[seq%locs.length],status:sts[seq%sts.length],images:[],createdAt:Date.now(),model:'',spec:'',quantity:1,price:0,warningLine:2,checkDueDate:l2==='检测设备'?'2026-07-01':'',needCheck:true,lastCheckDate:'',remark:''});
       });
     });
   });
