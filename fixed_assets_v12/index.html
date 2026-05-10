@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>固定资产管理系统</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--primary:#1677ff;--success:#52c41a;--warning:#faad14;--danger:#ff4d4f;--bg:#f5f5f5;--card-bg:#fff;--text:#1a1a1a;--text2:#666;--text3:#999;--border:#f0f0f0;--shadow:0 2px 8px rgba(0,0,0,0.06);--radius:12px;--rs:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+.header{background:var(--primary);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-size:17px;font-weight:600}
+.header-actions{display:flex;align-items:center;gap:12px}
+.header-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+.role-bar{display:flex;background:#fff;padding:4px;margin:8px 12px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.role-btn{flex:1;padding:8px 0;text-align:center;border:none;background:transparent;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .2s}
+.role-btn.active{background:var(--primary);color:#fff;box-shadow:0 2px 6px rgba(22,119,255,0.3)}
+.page{display:none;padding:0 12px 80px}
+.page.active{display:block}
+.card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.card-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.grid-menu{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.menu-item{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 12px;text-align:center;cursor:pointer;transition:transform .15s;border:none;width:100%}
+.menu-item:active{transform:scale(0.96)}
+.menu-item .icon{font-size:28px;margin-bottom:8px;display:block}
+.menu-item .label{font-size:14px;font-weight:500;color:var(--text)}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:14px;outline:none;transition:border .2s;background:#fff}
+.form-input:focus,.form-select:focus{border-color:var(--primary)}
+.form-textarea{min-height:80px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:none;border-radius:var(--rs);font-size:14px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-block{width:100%}
+.btn-sm{padding:6px 12px;font-size:12px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}
+th{font-weight:600;color:var(--text2);background:#fafafa}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500}
+.badge-pending{background:#fff7e6;color:#d46b08}
+.badge-approved{background:#f6ffed;color:#389e0d}
+.badge-rejected{background:#fff1f0;color:#cf1322}
+.badge-inuse{background:#e6f7ff;color:#096dd9}
+.badge-idle{background:#f0f5ff;color:#1d39c4}
+.badge-repair{background:#fff7e6;color:#d46b08}
+.badge-scrap{background:#f5f5f5;color:#8c8c8c}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal-content{background:#fff;border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:20px;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;text-align:center}
+.stat-num{font-size:24px;font-weight:700;color:var(--primary)}
+.stat-label{font-size:12px;color:var(--text2);margin-top:2px}
+.chart-box{width:100%;height:250px}
+.tabs{display:flex;background:#fff;border-radius:var(--rs);overflow:hidden;margin-bottom:12px;border:1px solid var(--border)}
+.tab-item{flex:1;padding:10px 0;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:all .2s}
+.tab-item.active{background:var(--primary);color:#fff}
+.approval-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.approval-item:last-child{border-bottom:none}
+.approval-info{flex:1}
+.approval-title{font-weight:500;font-size:14px}
+.approval-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.approval-actions{display:flex;gap:8px}
+.search-bar{display:flex;gap:8px;margin-bottom:12px}
+.search-bar input{flex:1}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:12px 24px;border-radius:var(--rs);font-size:14px;z-index:300;display:none;max-width:80%;text-align:center}
+.toast.show{display:block;animation:fadeInOut 2s ease}
+@keyframes fadeInOut{0%{opacity:0;transform:translate(-50%,-50%) scale(0.9)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0}}
+.version-badge{position:fixed;bottom:8px;right:12px;background:rgba(0,0,0,0.5);color:#fff;padding:2px 8px;border-radius:8px;font-size:10px;z-index:50}
+@media(min-width:768px){body{max-width:500px;margin:0 auto}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="header-title">固定资产管理</div>
+<div class="header-actions">
+<button class="header-btn" onclick="goBack()" id="backBtn" style="display:none"><i class="fas fa-arrow-left"></i></button>
+<button class="header-btn" onclick="showPage('profile')"><i class="fas fa-user"></i></button>
+</div>
+</div>
+
+<div class="role-bar">
+<button class="role-btn active" data-role="L1" onclick="switchRole('L1')">👤 员工</button>
+<button class="role-btn" data-role="L2" onclick="switchRole('L2')">🔧 管理员</button>
+<button class="role-btn" data-role="L3" onclick="switchRole('L3')">⚙️ 超管</button>
+</div>
+
+<div class="page active" id="page-l1-home">
+<div class="grid-menu">
+<div class="menu-item" onclick="showPage('l1-apply')" style="border-top:3px solid #1677ff"><span class="icon">📋</span><span class="label">领用</span></div>
+<div class="menu-item" onclick="showPage('l1-return')" style="border-top:3px solid #52c41a"><span class="icon">🔄</span><span class="label">归还</span></div>
+<div class="menu-item" onclick="showPage('l1-repair')" style="border-top:3px solid #faad14"><span class="icon">🔧</span><span class="label">报修</span></div>
+<div class="menu-item" onclick="showPage('l1-scrap')" style="border-top:3px solid #ff4d4f"><span class="icon">🗑️</span><span class="label">报废</span></div>
+</div>
+<div class="card" onclick="toggleMyRequests()" style="cursor:pointer">
+<div class="card-title"><span>📄 我的申请记录</span><span id="requestArrow" style="color:var(--text3);font-size:12px">展开 ▾</span></div>
+<div id="myRequests" style="display:none"><div id="myRequestsList"></div></div>
+</div>
+</div>
+
+<div class="page" id="page-l1-apply">
+<div class="card">
+<div class="card-title">📋 领用申请</div>
+<div class="form-group"><label class="form-label">资产名称</label><select class="form-select" id="applyAsset"><option value="">请选择资产</option></select></div>
+<div class="form-group"><label class="form-label">领用数量</label><input class="form-input" type="number" id="applyQty" value="1" min="1"></div>
+<div class="form-group"><label class="form-label">用途</label><select class="form-select" id="applyPurpose"><option>日常办公</option><option>维修更换</option><option>项目使用</option><option>临时借用</option></select></div>
+<div class="form-group"><label class="form-label">备注</label><textarea class="form-textarea" id="applyNote" placeholder="可选填写备注..."></textarea></div>
+<button class="btn btn-primary btn-block" onclick="submitApply()">提交申请</button>
+</div>
+</div>
+
+<div class="page" id="page-l1-return">
+<div class="card">
+<div class="card-title">🔄 归还资产</div>
+<div class="form-group"><label class="form-label">资产编号</label><select class="form-select" id="returnAsset"><option value="">请选择已领用的资产</option></select></div>
+<div class="form-group"><label class="form-label">资产状况</label><select class="form-select" id="returnCondition"><option>完好</option><option>损坏</option><option>有磨损</option></select></div>
+<div class="form-group"><label class="form-label">备注</label><textarea class="form-textarea" id="returnNote" placeholder="可选填写备注..."></textarea></div>
+<button class="btn btn-primary btn-block" onclick="submitReturn()">提交归还</button>
+</div>
+</div>
+
+<div class="page" id="page-l1-repair">
+<div class="card">
+<div class="card-title">🔧 报修申请</div>
+<div class="form-group"><label class="form-label">资产编号</label><select class="form-select" id="repairAsset"><option value="">请选择资产</option></select></div>
+<div class="form-group"><label class="form-label">故障描述</label><textarea class="form-textarea" id="repairDesc" placeholder="请描述故障情况..."></textarea></div>
+<div class="form-group"><label class="form-label">紧急程度</label><select class="form-select" id="repairUrgency"><option>普通</option><option>紧急</option><option>特急</option></select></div>
+<button class="btn btn-primary btn-block" onclick="submitRepair()">提交报修</button>
+</div>
+</div>
+
+<div class="page" id="page-l1-scrap">
+<div class="card">
+<div class="card-title">🗑️ 报废申请</div>
+<div class="form-group"><label class="form-label">资产编号</label><select class="form-select" id="scrapAsset"><option value="">请选择资产</option></select></div>
+<div class="form-group"><label class="form-label">报废原因</label><textarea class="form-textarea" id="scrapReason" placeholder="请说明报废原因..."></textarea></div>
+<button class="btn btn-danger btn-block" onclick="submitScrap()">提交报废申请</button>
+</div>
+</div>
+
+<div class="page" id="page-l2-home">
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">资产总数</div></div>
+<div class="stat-card"><div class="stat-num" id="statInUse">0</div><div class="stat-label">在用</div></div>
+<div class="stat-card"><div class="stat-num" id="statIdle">0</div><div class="stat-label">闲置</div></div>
+<div class="stat-card"><div class="stat-num" id="statRepair" style="color:var(--warning)">0</div><div class="stat-label">维修中</div></div>
+</div>
+<div class="tabs">
+<button class="tab-item active" onclick="switchL2Tab('dashboard',this)">📊 看板</button>
+<button class="tab-item" onclick="switchL2Tab('approvals',this)">📝 审批</button>
+<button class="tab-item" onclick="switchL2Tab('assets',this)">📦 台账</button>
+<button class="tab-item" onclick="switchL2Tab('records',this)">📋 领用记录</button>
+</div>
+<div id="l2-dashboard">
+<div class="card"><div class="card-title">📊 资产分类占比</div><div class="chart-box" id="chartCategory"></div></div>
+<div class="card"><div class="card-title">📈 领用趋势</div><div class="chart-box" id="chartTrend"></div></div>
+</div>
+<div id="l2-approvals" style="display:none">
+<div class="card"><div class="card-title">📝 待审批 <span id="pendingCount" class="badge badge-pending">0</span></div><div id="approvalList"></div></div>
+</div>
+<div id="l2-assets" style="display:none">
+<div class="card">
+<div class="card-title">📦 资产台账</div>
+<div class="search-bar"><input class="form-input" id="assetSearch" placeholder="搜索资产名称/编号..." oninput="renderAssetTable()"><button class="btn btn-primary btn-sm" onclick="showAddAsset()">+ 新增</button></div>
+<div class="table-wrap"><table><thead><tr><th>编号</th><th>名称</th><th>状态</th><th>操作</th></tr></thead><tbody id="assetTableBody"></tbody></table></div>
+</div>
+</div>
+<div id="l2-records" style="display:none">
+<div class="card">
+<div class="card-title">📋 领用记录</div>
+<div id="recordFilters" style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap"></div>
+<div id="recordList"></div>
+</div>
+</div>
+</div>
+
+<div class="page" id="page-l3-home">
+<div class="grid-menu" style="grid-template-columns:1fr 1fr">
+<div class="menu-item" onclick="showPage('l3-locations')"><span class="icon">📍</span><span class="label">存放地点</span></div>
+<div class="menu-item" onclick="showPage('l3-categories')"><span class="icon">📂</span><span class="label">资产分类</span></div>
+<div class="menu-item" onclick="showPage('l3-approval-flow')"><span class="icon">🔀</span><span class="label">审批流配置</span></div>
+<div class="menu-item" onclick="showPage('l3-audit')"><span class="icon">📜</span><span class="label">审计日志</span></div>
+</div>
+</div>
+
+<div class="page" id="page-l3-locations">
+<div class="card">
+<div class="card-title">📍 存放地点管理 <button class="btn btn-primary btn-sm" onclick="showAddLocation()">+ 新增</button></div>
+<div id="locationList"></div>
+</div>
+</div>
+
+<div class="page" id="page-l3-categories">
+<div class="card">
+<div class="card-title">📂 资产分类管理 <button class="btn btn-primary btn-sm" onclick="showAddCategory()">+ 新增</button></div>
+<div id="categoryList"></div>
+</div>
+</div>
+
+<div class="page" id="page-l3-approval-flow">
+<div class="card">
+<div class="card-title">🔀 审批流配置</div>
+<div class="form-group"><label class="form-label">资产分类</label><select class="form-select" id="flowCategory" onchange="renderFlowConfig()"></select></div>
+<div id="flowConfigArea"></div>
+<button class="btn btn-primary btn-block" onclick="saveFlowConfig()" style="margin-top:12px">保存配置</button>
+</div>
+</div>
+
+<div class="page" id="page-l3-audit">
+<div class="card">
+<div class="card-title">📜 审计日志</div>
+<div id="auditLogList"></div>
+</div>
+</div>
+
+<div class="page" id="page-profile">
+<div class="card">
+<div class="card-title">👤 个人中心</div>
+<div style="text-align:center;padding:20px 0">
+<div style="width:60px;height:60px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px">艾</div>
+<div style="font-size:16px;font-weight:600">艾培刚</div>
+<div style="font-size:12px;color:var(--text3)">榕江恒鑫机动车检测站</div>
+</div>
+<div style="border-top:1px solid var(--border);padding-top:12px">
+<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">当前角色</span><span id="profileRole" style="font-weight:500">L1 - 员工</span></div>
+<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">应用版本</span><span style="font-weight:500">v12</span></div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal-content" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+<div class="version-badge">v12</div>
+
+<script>
+const DB_KEY='fixed_assets_db';
+function getDB(){const r=localStorage.getItem(DB_KEY);if(r){try{return JSON.parse(r)}catch(e){}}
+return{assets:[],approvals:[],locations:['办公室A','办公室B','仓库1','仓库2','检测车间'],categories:['电子设备','办公家具','仪器仪表','机械设备','车辆','其他'],approvalFlows:{},auditLogs:[],nextAssetId:1,nextApprovalId:1}}
+function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
+function addAuditLog(d,a,dt){d.auditLogs.unshift({id:Date.now(),time:new Date().toLocaleString('zh-CN'),action:a,detail:dt,user:'艾培刚'})}
+let currentRole='L1';
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const el=document.getElementById('page-'+id);if(el)el.classList.add('active');currentPage=id;document.getElementById('backBtn').style.display=(id!==currentRole.toLowerCase()+'-home'&&id!=='l1-home')?'flex':'none';refreshPage(id)}
+function goBack(){showPage(currentRole.toLowerCase()+'-home')}
+function switchRole(r){currentRole=r;document.querySelectorAll('.role-btn').forEach(b=>b.classList.toggle('active',b.dataset.role===r));const n={L1:'员工',L2:'管理员',L3:'超管'};document.getElementById('profileRole').textContent=r+' - '+(n[r]||'');showPage(r.toLowerCase()+'-home')}
+function toggleMyRequests(){const e=document.getElementById('myRequests'),a=document.getElementById('requestArrow');if(e.style.display==='none'){e.style.display='block';a.textContent='收起 ▴';renderMyRequests()}else{e.style.display='none';a.textContent='展开 ▾'}}
+function switchL2Tab(t,b){document.querySelectorAll('.tab-item').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');document.getElementById('l2-dashboard').style.display=t==='dashboard'?'block':'none';document.getElementById('l2-approvals').style.display=t==='approvals'?'block':'none';document.getElementById('l2-assets').style.display=t==='assets'?'block':'none';document.getElementById('l2-records').style.display=t==='records'?'block':'none';if(t==='dashboard')renderCharts();if(t==='approvals')renderApprovals();if(t==='assets')renderAssetTable();if(t==='records')renderRecords()}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+function openModal(h){document.getElementById('modalContent').innerHTML=h;document.getElementById('modalOverlay').classList.add('active')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active')}
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal()});
+function refreshPage(id){if(id==='l1-home')renderMyRequests();else if(id==='l1-apply')loadAssetSelect('applyAsset');else if(id==='l1-return')loadMyAssetsSelect('returnAsset');else if(id==='l1-repair')loadAssetSelect('repairAsset');else if(id==='l1-scrap')loadAssetSelect('scrapAsset');else if(id==='l2-home'){updateStats();renderCharts();renderApprovals();renderAssetTable();renderRecords()}else if(id==='l3-locations')renderLocations();else if(id==='l3-categories')renderCategories();else if(id==='l3-approval-flow')renderFlowConfig();else if(id==='l3-audit')renderAuditLogs()}
+function loadAssetSelect(sid){const db=getDB(),sel=document.getElementById(sid);if(!sel)return;sel.innerHTML='<option value="">请选择资产</option>';db.assets.forEach(a=>{sel.innerHTML+='<option value="'+a.id+'">'+a.code+' - '+a.name+'</option>'})}
+function loadMyAssetsSelect(sid){const db=getDB(),sel=document.getElementById(sid);if(!sel)return;sel.innerHTML='<option value="">请选择已领用的资产</option>';db.assets.filter(a=>a.status==='在用').forEach(a=>{sel.innerHTML+='<option value="'+a.id+'">'+a.code+' - '+a.name+'</option>'})}
+function submitApply(){const aid=document.getElementById('applyAsset').value,qty=parseInt(document.getElementById('applyQty').value)||1,purpose=document.getElementById('applyPurpose').value,note=document.getElementById('applyNote').value;if(!aid){showToast('请选择资产');return}
+const db=getDB();db.approvals.push({id:db.nextApprovalId++,type:'领用',assetId:parseInt(aid),qty,purpose,note,applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});addAuditLog(db,'提交领用申请','资产ID:'+aid+',数量:'+qty);saveDB(db);showToast('领用申请已提交 ✅');document.getElementById('applyNote').value='';goBack()}
+function submitReturn(){const aid=document.getElementById('returnAsset').value,cond=document.getElementById('returnCondition').value,note=document.getElementById('returnNote').value;if(!aid){showToast('请选择资产');return}
+const db=getDB();db.approvals.push({id:db.nextApprovalId++,type:'归还',assetId:parseInt(aid),condition:cond,note,applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});addAuditLog(db,'提交归还申请','资产ID:'+aid+',状况:'+cond);if(cond==='损坏'){db.approvals.push({id:db.nextApprovalId++,type:'报修',assetId:parseInt(aid),note:'归还时发现损坏，自动生成报修申请',applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});showToast('归还已提交，因损坏自动生成报修申请 🔧')}else{showToast('归还申请已提交 ✅')}
+saveDB(db);document.getElementById('returnNote').value='';goBack()}
+function submitRepair(){const aid=document.getElementById('repairAsset').value,desc=document.getElementById('repairDesc').value,urg=document.getElementById('repairUrgency').value;if(!aid){showToast('请选择资产');return}
+if(!desc){showToast('请描述故障情况');return}
+const db=getDB();db.approvals.push({id:db.nextApprovalId++,type:'报修',assetId:parseInt(aid),desc,urgency:urg,applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});addAuditLog(db,'提交报修申请','资产ID:'+aid+',紧急程度:'+urg);saveDB(db);showToast('报修申请已提交 ✅');document.getElementById('repairDesc').value='';goBack()}
+function submitScrap(){const aid=document.getElementById('scrapAsset').value,reason=document.getElementById('scrapReason').value;if(!aid){showToast('请选择资产');return}
+if(!reason){showToast('请说明报废原因');return}
+const db=getDB();db.approvals.push({id:db.nextApprovalId++,type:'报废',assetId:parseInt(aid),reason,applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});addAuditLog(db,'提交报废申请','资产ID:'+aid);saveDB(db);showToast('报废申请已提交 ✅');document.getElementById('scrapReason').value='';goBack()}// ===== L2: STATS & CHARTS =====
+function updateStats(){const db=getDB(),total=db.assets.length,inUse=db.assets.filter(a=>a.status==='在用').length,idle=db.assets.filter(a=>a.status==='闲置'||a.status==='备用').length,repair=db.assets.filter(a=>a.status==='维修中').length;document.getElementById('statTotal').textContent=total;document.getElementById('statInUse').textContent=inUse;document.getElementById('statIdle').textContent=idle;document.getElementById('statRepair').textContent=repair}
+function renderCharts(){renderCategoryChart();renderTrendChart()}
+function renderCategoryChart(){const db=getDB(),el=document.getElementById('chartCategory');if(!el)return;const map={};db.assets.forEach(a=>{map[a.category]=(map[a.category]||0)+1});const data=Object.entries(map).map(([k,v])=>({name:k,value:v}));if(data.length===0){el.innerHTML='<div style="text-align:center;padding:60px 0;color:var(--text3)">暂无资产数据</div>';return}
+const chart=echarts.init(el);chart.setOption({tooltip:{trigger:'item'},legend:{bottom:0,textStyle:{fontSize:11}},series:[{type:'pie',radius:['30%','60%'],center:['50%','40%'],data,label:{fontSize:11},itemStyle:{borderRadius:4}}]});window.addEventListener('resize',()=>chart.resize())}
+function renderTrendChart(){const db=getDB(),el=document.getElementById('chartTrend');if(!el)return;const map={};db.approvals.filter(a=>a.type==='领用').forEach(a=>{const d=a.time.slice(0,10);map[d]=(map[d]||0)+1});const dates=Object.keys(map).sort(),values=dates.map(d=>map[d]);if(dates.length===0){el.innerHTML='<div style="text-align:center;padding:60px 0;color:var(--text3)">暂无领用数据</div>';return}
+const chart=echarts.init(el);chart.setOption({tooltip:{trigger:'axis'},xAxis:{type:'category',data:dates,axisLabel:{fontSize:10}},yAxis:{type:'value'},series:[{type:'line',data:values,smooth:true,lineStyle:{color:'#1677ff',width:2},areaStyle:{color:'rgba(22,119,255,0.1)'},itemStyle:{color:'#1677ff'}}]});window.addEventListener('resize',()=>chart.resize())}
+
+// ===== L2: APPROVALS =====
+function renderApprovals(){const db=getDB(),pending=db.approvals.filter(a=>a.status==='待审批');document.getElementById('pendingCount').textContent=pending.length;const el=document.getElementById('approvalList');if(pending.length===0){el.innerHTML='<div class="empty-state"><div class="icon">✅</div><div>暂无待审批事项</div></div>';return}
+el.innerHTML=pending.map(a=>{
+const asset=db.assets.find(x=>x.id===a.assetId);
+return '<div class="approval-item"><div class="approval-info"><div class="approval-title">'+a.type+'申请 - '+(asset?asset.name:'未知资产')+'</div><div class="approval-meta">'+a.applicant+' · '+a.time+'</div></div><div class="approval-actions"><button class="btn btn-success btn-sm" onclick="approve('+a.id+')">通过</button><button class="btn btn-danger btn-sm" onclick="reject('+a.id+')">拒绝</button></div></div>'
+}).join('')}
+function approve(id){const db=getDB();const idx=db.approvals.findIndex(a=>a.id===id);if(idx===-1)return;const a=db.approvals[idx];a.status='已通过';a.approvedAt=Date.now();a.approvedBy='管理员';const asset=db.assets.find(x=>x.id===a.assetId);if(asset&&a.type==='领用')asset.status='在用';if(asset&&a.type==='报修')asset.status='维修中';if(asset&&a.type==='报废')asset.status='已报废';if(asset&&a.type==='归还')asset.status='闲置';addAuditLog(db,'审批通过',a.type+'申请 #'+a.id);saveDB(db);showToast('已通过 ✅');renderApprovals();renderAssetTable();updateStats()}
+function reject(id){const db=getDB();const idx=db.approvals.findIndex(a=>a.id===id);if(idx===-1)return;const a=db.approvals[idx];a.status='已拒绝';a.rejectedAt=Date.now();a.rejectedBy='管理员';addAuditLog(db,'审批拒绝',a.type+'申请 #'+a.id);saveDB(db);showToast('已拒绝');renderApprovals()}
+
+// ===== L2: ASSET TABLE =====
+function renderAssetTable(){const db=getDB(),q=document.getElementById('assetSearch').value.toLowerCase();const list=db.assets.filter(a=>!q||a.name.toLowerCase().includes(q)||a.code.toLowerCase().includes(q));const tbody=document.getElementById('assetTableBody');if(list.length===0){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:30px 0">暂无资产数据</td></tr>';return}
+tbody.innerHTML=list.map(a=>{
+const statusMap={'在用':'badge-inuse','闲置':'badge-idle','备用':'badge-idle','维修中':'badge-repair','已报废':'badge-scrap'};
+return '<tr><td>'+a.code+'</td><td>'+a.name+'</td><td><span class="badge '+(statusMap[a.status]||'badge-idle')+'">'+a.status+'</span></td><td><button class="btn btn-sm btn-outline" onclick="editAsset('+a.id+')">编辑</button></td></tr>'
+}).join('')}
+function showAddAsset(){const db=getDB();const locOpts=db.locations.map(l=>'<option>'+l+'</option>').join('');const catOpts=db.categories.map(c=>'<option>'+c+'</option>').join('');openModal('<div class="modal-title">新增资产<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">资产名称</label><input class="form-input" id="newAssetName" placeholder="请输入资产名称"></div><div class="form-group"><label class="form-label">资产分类</label><select class="form-select" id="newAssetCat">'+catOpts+'</select></div><div class="form-group"><label class="form-label">存放地点</label><select class="form-select" id="newAssetLoc">'+locOpts+'</select></div><div class="form-group"><label class="form-label">状态</label><select class="form-select" id="newAssetStatus"><option>闲置</option><option>备用</option></select></div><button class="btn btn-primary btn-block" onclick="saveNewAsset()">保存</button>')}
+function saveNewAsset(){const name=document.getElementById('newAssetName').value.trim(),cat=document.getElementById('newAssetCat').value,loc=document.getElementById('newAssetLoc').value,status=document.getElementById('newAssetStatus').value;if(!name){showToast('请输入资产名称');return}
+const db=getDB();const locCode=loc.replace(/[^A-Za-z\u4e00-\u9fa5]/g,'').substring(0,4).toUpperCase()||'QT';const catCode=cat.replace(/[^A-Za-z\u4e00-\u9fa5]/g,'').substring(0,4).toUpperCase()||'QT';const seq=String(db.nextAssetId).padStart(6,'0');const code=locCode+'-'+catCode+'-'+seq;db.assets.push({id:db.nextAssetId++,name,code,category:cat,location:loc,status,createdAt:Date.now()});addAuditLog(db,'新增资产','编号:'+code+',名称:'+name);saveDB(db);closeModal();showToast('资产添加成功 ✅');renderAssetTable();updateStats()}
+function editAsset(id){const db=getDB();const a=db.assets.find(x=>x.id===id);if(!a)return;const locOpts=db.locations.map(l=>'<option'+(l===a.location?' selected':'')+'>'+l+'</option>').join('');const catOpts=db.categories.map(c=>'<option'+(c===a.category?' selected':'')+'>'+c+'</option>').join('');openModal('<div class="modal-title">编辑资产<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">资产名称</label><input class="form-input" id="editAssetName" value="'+a.name+'"></div><div class="form-group"><label class="form-label">资产分类</label><select class="form-select" id="editAssetCat">'+catOpts+'</select></div><div class="form-group"><label class="form-label">存放地点</label><select class="form-select" id="editAssetLoc">'+locOpts+'</select></div><div class="form-group"><label class="form-label">状态</label><select class="form-select" id="editAssetStatus"><option'+(a.status==='在用'?' selected':'')+'>在用</option><option'+(a.status==='闲置'?' selected':'')+'>闲置</option><option'+(a.status==='备用'?' selected':'')+'>备用</option><option'+(a.status==='维修中'?' selected':'')+'>维修中</option><option'+(a.status==='已报废'?' selected':'')+'>已报废</option></select></div><button class="btn btn-primary btn-block" onclick="saveEditAsset('+id+')">保存修改</button>')}
+function saveEditAsset(id){const db=getDB();const a=db.assets.find(x=>x.id===id);if(!a)return;const name=document.getElementById('editAssetName').value.trim();if(!name){showToast('请输入资产名称');return}
+a.name=name;a.category=document.getElementById('editAssetCat').value;a.location=document.getElementById('editAssetLoc').value;a.status=document.getElementById('editAssetStatus').value;addAuditLog(db,'编辑资产','编号:'+a.code);saveDB(db);closeModal();showToast('修改已保存 ✅');renderAssetTable();updateStats()}
+
+// ===== L2: RECORDS =====
+function renderRecords(){const db=getDB();const statuses=['全部','待审批','已通过','已拒绝'];const el=document.getElementById('recordFilters');el.innerHTML=statuses.map(s=>'<button class="btn btn-sm '+(s==='全部'?'btn-primary':'btn-outline')+'" onclick="filterRecords(\''+s+'\',this)">'+s+'</button>').join('');renderRecordList('全部')}
+function filterRecords(s,btn){document.querySelectorAll('#recordFilters .btn').forEach(b=>b.className='btn btn-sm btn-outline');if(btn)btn.className='btn btn-sm btn-primary';renderRecordList(s)}
+function renderRecordList(filter){const db=getDB();let list=db.approvals;if(filter!=='全部')list=list.filter(a=>a.status===filter);const el=document.getElementById('recordList');if(list.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📋</div><div>暂无记录</div></div>';return}
+el.innerHTML=list.map(a=>{
+const asset=db.assets.find(x=>x.id===a.assetId);
+const statusMap={'待审批':'badge-pending','已通过':'badge-approved','已拒绝':'badge-rejected'};
+return '<div class="approval-item"><div class="approval-info"><div class="approval-title">'+a.type+'申请 - '+(asset?asset.name:'未知')+'</div><div class="approval-meta">'+a.applicant+' · '+a.time+' <span class="badge '+(statusMap[a.status]||'')+'">'+a.status+'</span></div></div></div>'
+}).join('')}
+
+// ===== L3: LOCATIONS =====
+function renderLocations(){const db=getDB(),el=document.getElementById('locationList');if(db.locations.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📍</div><div>暂无存放地点</div></div>';return}
+el.innerHTML=db.locations.map((l,i)=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+l+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteLocation('+i+')">删除</button></div>').join('')}
+function showAddLocation(){openModal('<div class="modal-title">新增存放地点<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">地点名称</label><input class="form-input" id="newLocationName" placeholder="请输入存放地点"></div><button class="btn btn-primary btn-block" onclick="saveNewLocation()">保存</button>')}
+function saveNewLocation(){const name=document.getElementById('newLocationName').value.trim();if(!name){showToast('请输入地点名称');return}
+const db=getDB();db.locations.push(name);addAuditLog(db,'新增存放地点',name);saveDB(db);closeModal();showToast('添加成功 ✅');renderLocations()}
+function deleteLocation(i){const db=getDB();const name=db.locations[i];if(!confirm('确定删除「'+name+'」吗？'))return;db.locations.splice(i,1);addAuditLog(db,'删除存放地点',name);saveDB(db);renderLocations()}
+
+// ===== L3: CATEGORIES =====
+function renderCategories(){const db=getDB(),el=document.getElementById('categoryList');if(db.categories.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📂</div><div>暂无资产分类</div></div>';return}
+el.innerHTML=db.categories.map((c,i)=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+c+'</div></div><button class="btn btn-danger btn-sm" onclick="deleteCategory('+i+')">删除</button></div>').join('')}
+function showAddCategory(){openModal('<div class="modal-title">新增资产分类<button class="modal-close" onclick="closeModal()">✕</button></div><div class="form-group"><label class="form-label">分类名称</label><input class="form-input" id="newCategoryName" placeholder="请输入资产分类"></div><button class="btn btn-primary btn-block" onclick="saveNewCategory()">保存</button>')}
+function saveNewCategory(){const name=document.getElementById('newCategoryName').value.trim();if(!name){showToast('请输入分类名称');return}
+const db=getDB();db.categories.push(name);addAuditLog(db,'新增资产分类',name);saveDB(db);closeModal();showToast('添加成功 ✅');renderCategories()}
+function deleteCategory(i){const db=getDB();const name=db.categories[i];if(!confirm('确定删除「'+name+'」吗？'))return;db.categories.splice(i,1);addAuditLog(db,'删除资产分类',name);saveDB(db);renderCategories()}
+
+// ===== L3: APPROVAL FLOW =====
+function renderFlowConfig(){const db=getDB(),sel=document.getElementById('flowCategory');sel.innerHTML='<option value="">请选择分类</option>';db.categories.forEach(c=>{sel.innerHTML+='<option value="'+c+'">'+c+'</option>'});const cat=sel.value;const area=document.getElementById('flowConfigArea');if(!cat){area.innerHTML='<div class="empty-state"><div class="icon">🔀</div><div>请先选择资产分类</div></div>';return}
+const flow=db.approvalFlows[cat]||{nodes:['申请人','部门主管','管理员']};
+area.innerHTML='<div style="margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="addFlowNode()">+ 添加审批节点</button></div><div id="flowNodes">'+flow.nodes.map((n,i)=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:var(--rs)"><span style="color:var(--text2);font-size:12px">'+(i+1)+'.</span><input class="form-input" id="flowNode_'+i+'" value="'+n+'" style="flex:1;padding:6px 10px"><button class="btn btn-danger btn-sm" onclick="removeFlowNode('+i+')">✕</button></div>').join('')+'</div>'}
+function addFlowNode(){const area=document.getElementById('flowNodes');const idx=area.children.length;area.innerHTML+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;background:#fafafa;border-radius:var(--rs)"><span style="color:var(--text2);font-size:12px">'+(idx+1)+'.</span><input class="form-input" id="flowNode_'+idx+'" value="新节点" style="flex:1;padding:6px 10px"><button class="btn btn-danger btn-sm" onclick="removeFlowNode('+idx+')">✕</button></div>'}
+function removeFlowNode(i){const el=document.getElementById('flowNode_'+i);if(el){const div=el.closest('div');if(div)div.remove()}}
+function saveFlowConfig(){const cat=document.getElementById('flowCategory').value;if(!cat){showToast('请选择资产分类');return}
+const nodes=[];let i=0;while(true){const el=document.getElementById('flowNode_'+i);if(!el)break;nodes.push(el.value||'审批人');i++}
+if(nodes.length<2){showToast('至少需要2个审批节点');return}
+const db=getDB();db.approvalFlows[cat]={nodes};addAuditLog(db,'配置审批流','分类:'+cat+',节点:'+nodes.join('→'));saveDB(db);showToast('审批流配置已保存 ✅')}
+
+// ===== L3: AUDIT LOGS =====
+function renderAuditLogs(){const db=getDB(),el=document.getElementById('auditLogList');if(db.auditLogs.length===0){el.innerHTML='<div class="empty-state"><div class="icon">📜</div><div>暂无审计日志</div></div>';return}
+el.innerHTML=db.auditLogs.map(log=>'<div class="approval-item"><div class="approval-info"><div class="approval-title">'+log.action+'</div><div class="approval-meta">'+log.user+' · '+log.time+'<br>'+log.detail+'</div></div></div>').join('')}
+
+// ===== L1: MY REQUESTS =====
+function renderMyRequests(){const db=getDB();const list=db.approvals.filter(a=>a.applicant==='艾培刚');const el=document.getElementById('myRequestsList');if(list.length===0){el.innerHTML='<div style="text-align:center;padding:20px 0;color:var(--text3)">暂无申请记录</div>';return}
+const statusMap={'待审批':'badge-pending','已通过':'badge-approved','已拒绝':'badge-rejected'};
+el.innerHTML=list.map(a=>{
+const asset=db.assets.find(x=>x.id===a.assetId);
+return '<div class="approval-item"><div class="approval-info"><div class="approval-title">'+a.type+'申请 - '+(asset?asset.name:'未知')+'</div><div class="approval-meta">'+a.time+' <span class="badge '+(statusMap[a.status]||'')+'">'+a.status+'</span></div></div></div>'
+}).join('')}
+
+// ===== INIT =====
+// 初始化示例数据
+(function initDemoData(){const db=getDB();if(db.assets.length>0)return;
+const demoAssets=[{name:'ThinkPad笔记本',cat:'电子设备',loc:'办公室A',status:'在用'},{name:'惠普打印机',cat:'电子设备',loc:'办公室B',status:'在用'},{name:'办公桌椅套装',cat:'办公家具',loc:'办公室A',status:'在用'},{name:'示波器',cat:'仪器仪表',loc:'检测车间',status:'闲置'},{name:'万用表',cat:'仪器仪表',loc:'检测车间',status:'在用'},{name:'货架',cat:'办公家具',loc:'仓库1',status:'闲置'},{name:'台式电脑',cat:'电子设备',loc:'办公室B',status:'在用'},{name:'车辆-五菱宏光',cat:'车辆',loc:'停车场',status:'闲置'}];
+demoAssets.forEach(a=>{const locCode=a.loc.replace(/[^A-Za-z\u4e00-\u9fa5]/g,'').substring(0,4).toUpperCase()||'QT';const catCode=a.cat.replace(/[^A-Za-z\u4e00-\u9fa5]/g,'').substring(0,4).toUpperCase()||'QT';const seq=String(db.nextAssetId).padStart(6,'0');db.assets.push({id:db.nextAssetId++,name:a.name,code:locCode+'-'+catCode+'-'+seq,category:a.cat,location:a.loc,status:a.status,createdAt:Date.now()})});
+db.approvals.push({id:db.nextApprovalId++,type:'领用',assetId:1,qty:1,purpose:'项目使用',note:'',applicant:'艾培刚',status:'待审批',time:new Date().toLocaleString('zh-CN'),createdAt:Date.now()});
+saveDB(db)})();
+</script>
+</body>
+</html>
