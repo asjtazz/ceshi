@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>固定资产管理系统 V16</title>
+<title>固定资产管理系统 V17</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -248,15 +248,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 </div>
 <div style="border-top:1px solid var(--border);padding-top:12px">
 <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">当前角色</span><span id="profileRole" style="font-weight:500">L1 - 员工</span></div>
-<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">应用版本</span><span style="font-weight:500">v15</span></div>
+<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">应用版本</span><span style="font-weight:500">v17</span></div>
 </div>
 </div>
 </div>
 <div class="modal-overlay" id="modalOverlay"><div class="modal-content" id="modalContent"></div></div>
 <div class="toast" id="toast"></div>
-<div class="version-badge">v15</div>
-<script>// ===== V15 资产分类（按信息卡粘贴规范）=====
-const V15_CATEGORY_TREE = {
+<div class="version-badge">v17</div>
+<script>// ===== V17 资产分类（按信息卡粘贴规范）=====
+const V17_CATEGORY_TREE = {
   'A-土地房屋及构筑物': {
     'A01-土地': ['土地使用权','租赁土地'],
     'A02-房屋': ['办公楼','厂房','仓库','宿舍'],
@@ -279,8 +279,8 @@ const V15_CATEGORY_TREE = {
     'D03-动植物': ['观赏树木','草坪','花卉','盆栽','观赏鱼','宠物']
   }
 };
-// ===== V15 存放地点（按规范：站点→区域→具体位置）=====
-const V15_LOCATION_TREE = {
+// ===== V17 存放地点（按规范：站点→区域→具体位置）=====
+const V17_LOCATION_TREE = {
   '榕江恒鑫机动车检测站（主站）': {
     '检测车间': ['1号检测线','2号检测线','3号检测线','灯光检测区','尾气检测区','底盘检测区','外检区','地沟区'],
     '业务大厅': ['前台接待区','业务办理窗口','休息等候区','资料档案室'],
@@ -321,13 +321,13 @@ const ORG_DEPT = {
 const ORG_PERSONNEL = Object.values(ORG_DEPT).flat();
 
 // ===== DATA LAYER =====
-const DB_KEY='fixed_assets_db_v15';
+const DB_KEY='fixed_assets_db_v17';
 function getDB(){
   const r=localStorage.getItem(DB_KEY);
   if(r){try{return JSON.parse(r)}catch(e){}}
   const db={assets:[],approvals:[],approvalFlows:{},auditLogs:[],
-    categoryTree:JSON.parse(JSON.stringify(V15_CATEGORY_TREE)),
-    locationTree:JSON.parse(JSON.stringify(V15_LOCATION_TREE)),
+    categoryTree:JSON.parse(JSON.stringify(V17_CATEGORY_TREE)),
+    locationTree:JSON.parse(JSON.stringify(V17_LOCATION_TREE)),
     permissions:{admins:[],superAdmins:['艾培刚']},
     nextApprovalId:1,nextAssetId:1,
     checkPeriod:{},inspectPeriod:{}};
@@ -373,7 +373,7 @@ async function handleImageUpload(ev,st){
 function renderImagePreview(st){
   const arr=imageStores[st],c=document.getElementById(st+'Images');
   if(!c)return;
-  c.innerHTML=arr.map((img,i)=>'<div class="image-thumb"><img src="'+img+'"><button class="del-btn" onclick="removeImage(\\''+st+'\\','+i+')">✕</button></div>').join('');
+  c.innerHTML=arr.map((img,i)=>'<div class="image-thumb"><img src="'+img+'"><button class="del-btn" onclick="removeImage(\''+st+'\','+i+')">✕</button></div>').join('');
 }
 function removeImage(st,i){imageStores[st].splice(i,1);renderImagePreview(st)}
 
@@ -510,7 +510,7 @@ function submitReturn(){
   const aid=document.getElementById('returnAsset').value,cond=document.getElementById('returnCondition').value,note=document.getElementById('returnNote').value;
   if(!aid){showToast('请选择资产');return}
   if(cond==='有磨损'){
-    openModal('<div class="modal-title">⚠️ 资产有磨损<button class="modal-close" onclick="closeModal()">✕</button></div><p style="color:var(--text2);margin-bottom:16px">该资产有磨损，请选择处理方式：</p><button class="btn btn-warning btn-block" style="margin-bottom:8px" onclick="processWearRepair('+aid+',\\''+note+'\\')">🔧 送修</button><button class="btn btn-danger btn-block" onclick="processWearScrap('+aid+',\\''+note+'\\')">🗑️ 报废</button>');
+    openModal('<div class="modal-title">⚠️ 资产有磨损<button class="modal-close" onclick="closeModal()">✕</button></div><p style="color:var(--text2);margin-bottom:16px">该资产有磨损，请选择处理方式：</p><button class="btn btn-warning btn-block" style="margin-bottom:8px" onclick="processWearRepair('+aid+',\''+note+'\')">🔧 送修</button><button class="btn btn-danger btn-block" onclick="processWearScrap('+aid+',\''+note+'\')">🗑️ 报废</button>');
     return;
   }
   processReturn(aid,cond,note);
@@ -930,7 +930,7 @@ function saveEditAssetV14(id){
 function renderRecords(){
   const db=getDB(),sts=['全部','待审批','已通过','已拒绝'];
   const el=document.getElementById('recordFilters');
-  el.innerHTML=sts.map(s=>'<button class="btn btn-sm '+(s==='全部'?'btn-primary':'btn-outline')+'" onclick="filterRecords(\\''+s+'\\',this)">'+s+'</button>').join('');
+  el.innerHTML=sts.map(s=>'<button class="btn btn-sm '+(s==='全部'?'btn-primary':'btn-outline')+'" onclick="filterRecords(\''+s+'\',this)">'+s+'</button>').join('');
   renderRecordList('全部');
 }
 function filterRecords(s,btn){
@@ -981,11 +981,11 @@ function renderCategoryTree(){
   if(Object.keys(tree).length===0){el.innerHTML='<div class="empty-state"><div class="icon">📂</div><div>暂无资产分类</div></div>';return}
   let html='';
   Object.entries(tree).forEach(([l1,l2Map])=>{
-    html+='<div class="tree-l1"><span><strong>'+l1+'</strong> <span style="color:#999;font-size:12px">(编码:'+(CAT_CODE_MAP[l1]?.prefix||'--')+')</span></span><div><button class="btn btn-sm btn-outline" onclick="addSubCategory(\\''+l1+'\\')">+ 子类</button><button class="btn btn-sm btn-danger" onclick="deleteCatL1(\\''+l1+'\\')" style="margin-left:4px">删除</button></div></div>';
+    html+='<div class="tree-l1"><span><strong>'+l1+'</strong> <span style="color:#999;font-size:12px">(编码:'+(CAT_CODE_MAP[l1]?.prefix||'--')+')</span></span><div><button class="btn btn-sm btn-outline" onclick="addSubCategory(\''+l1+'\')">+ 子类</button><button class="btn btn-sm btn-danger" onclick="deleteCatL1(\''+l1+'\')" style="margin-left:4px">删除</button></div></div>';
     Object.entries(l2Map).forEach(([l2,l3List])=>{
       const catCode=CAT_CODE_MAP[l1]?.children?.[l2]||'';
-      html+='<div class="tree-l2"><span>└ '+l2+' <span style="color:#999;font-size:12px">(编码:'+catCode+')</span></span><div><button class="btn btn-sm btn-outline" onclick="addL3Item(\\''+l1+'\\',\\''+l2+'\\')">+ 三级</button><button class="btn btn-sm btn-primary" onclick="setInspectPeriod(\\''+l1+'\\',\\''+l2+'\\')" style="margin-left:4px">⏰ 周期</button><button class="btn btn-sm btn-danger" onclick="deleteCatL2(\\''+l1+'\\',\\''+l2+'\\')" style="margin-left:4px">删除</button></div></div>';
-      l3List.forEach(l3=>{html+='<div class="tree-l3"><span>└ '+l3+'</span><span class="del" onclick="deleteCatL3(\\''+l1+'\\',\\''+l2+'\\',\\''+l3+'\\')">删除</span></div>'});
+      html+='<div class="tree-l2"><span>└ '+l2+' <span style="color:#999;font-size:12px">(编码:'+catCode+')</span></span><div><button class="btn btn-sm btn-outline" onclick="addL3Item(\''+l1+'\',\''+l2+'\')">+ 三级</button><button class="btn btn-sm btn-primary" onclick="setInspectPeriod(\''+l1+'\',\''+l2+'\')" style="margin-left:4px">⏰ 周期</button><button class="btn btn-sm btn-danger" onclick="deleteCatL2(\''+l1+'\',\''+l2+'\')" style="margin-left:4px">删除</button></div></div>';
+      l3List.forEach(l3=>{html+='<div class="tree-l3"><span>└ '+l3+'</span><span class="del" onclick="deleteCatL3(\''+l1+'\',\''+l2+'\',\''+l3+'\')">删除</span></div>'});
     });
   });
   el.innerHTML=html;
@@ -996,7 +996,7 @@ function setInspectPeriod(l1,l2){
   openModal('<div class="modal-title">⏰ 设置检测周期<button class="modal-close" onclick="closeModal()">✕</button></div>'+
     '<p style="color:var(--text2);margin-bottom:12px">分类：'+l1+' → '+l2+'</p>'+
     '<div class="form-group"><label class="form-label">检测周期</label><select class="form-select" id="inspectPeriodSelect"><option value="月"'+(cur==='月'?' selected':'')+'>每月</option><option value="季度"'+(cur==='季度'?' selected':'')+'>每季度</option><option value="半年"'+(cur==='半年'?' selected':'')+'>每半年</option><option value="年"'+(cur==='年'?' selected':'')+'>每年</option></select></div>'+
-    '<button class="btn btn-primary btn-block" onclick="saveInspectPeriod(\\''+l1+'\\',\\''+l2+'\\')">保存</button>');
+    '<button class="btn btn-primary btn-block" onclick="saveInspectPeriod(\''+l1+'\',\''+l2+'\')">保存</button>');
 }
 function saveInspectPeriod(l1,l2){
   const period=document.getElementById('inspectPeriodSelect').value;
@@ -1257,10 +1257,10 @@ function printAssetLabel(id){
 // ===== INIT =====
 (function(){
   const db=getDB();
-  // 兼容旧版数据：如果 categoryTree 为空，用 V15 分类
-  if(!db.categoryTree||Object.keys(db.categoryTree).length===0)db.categoryTree=JSON.parse(JSON.stringify(V15_CATEGORY_TREE));
-  // 兼容旧版数据：如果 locationTree 为空，用 V15 地点
-  if(!db.locationTree||Object.keys(db.locationTree).length===0)db.locationTree=JSON.parse(JSON.stringify(V15_LOCATION_TREE));
+  // 兼容旧版数据：如果 categoryTree 为空，用 V17 分类
+  if(!db.categoryTree||Object.keys(db.categoryTree).length===0)db.categoryTree=JSON.parse(JSON.stringify(V17_CATEGORY_TREE));
+  // 兼容旧版数据：如果 locationTree 为空，用 V17 地点
+  if(!db.locationTree||Object.keys(db.locationTree).length===0)db.locationTree=JSON.parse(JSON.stringify(V17_LOCATION_TREE));
   // 初始化示例数据
   if(db.assets.length===0){
     ['ThinkPad笔记本','台式电脑','激光打印机','空调','办公桌椅','文件柜','汽车制动检验台','汽车侧滑检验台','万用表','示波器'].forEach((n,i)=>{
