@@ -1,0 +1,48 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #f7f8fa;
+  color: #323233;
+  height: 100%;
+}
+
+a { text-decoration: none; color: inherit; }
+button { border: none; outline: none; background: none; }
+input, textarea, select { font-family: inherit; }
+
+.van-tabbar { z-index: 100; }
+
+/* 页面通用间距 */
+.page-content { padding: 12px 16px 80px; }
+
+/* 空状态居中 */
+.van-empty { padding: 60px 0; }
+
+/* 通用标题 */
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #323233;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+/* 通用卡片阴影 */
+.card-shadow {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* 加载中 */
+.loading-mask {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #999;
+}
